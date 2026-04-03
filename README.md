@@ -8,7 +8,7 @@ This project represents the **final time to compile our works on GitHub**, combi
 
 ---
 
-# 📌 Project Overview
+#  Project Overview
 
 Git Pulse simplifies repository analysis by converting GitHub repository data into clear and structured statistics. Instead of manually checking commits, contributors, and repository details, users simply paste a repository link and view results instantly.
 
@@ -81,7 +81,7 @@ https://github.com/user/repository-name
 
 ---
 
-# 📂 Project Structure
+#  Project Structure
 
 ```
 git-pulse/
@@ -105,7 +105,7 @@ git-pulse/
 
 ---
 
-# 🚀 Installation & Setup
+#  Installation & Setup
 
 ### Step 1: Clone Repository
 
@@ -142,7 +142,7 @@ http://localhost:8080
 
 ---
 
-# 🤝 Contribution
+#  Contribution
 
 This project represents the **final time to compile our works on GitHub**, bringing together all developed components into a complete working system.
 
