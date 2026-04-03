@@ -1,5 +1,3 @@
-# GitPulse
-For making a GitHub repository manager
 #  Git Pulse — GitHub Repository Statistics Analyzer 
 
 Git Pulse is a **Java-based web application** that allows users to enter a GitHub repository link and instantly receive meaningful statistics and insights about the repository.
@@ -39,9 +37,7 @@ This project marks the **final compilation stage of our work on GitHub**, integr
 
 **Frontend**
 
-* HTML
-* CSS
-* JavaScript
+* JavaFX
 
 **API**
 
@@ -78,30 +74,6 @@ https://github.com/user/repository-name
 * Stars and forks
 * Repository activity
 * Repository statistics summary
-
----
-
-#  Project Structure
-
-```
-git-pulse/
-│
-├── src/
-│   ├── Main.java
-│   ├── RepositoryAnalyzer.java
-│   ├── APIHandler.java
-│
-├── web/
-│   ├── index.html
-│   ├── style.css
-│   ├── script.js
-│
-├── lib/
-│
-├── README.md
-│
-└── config files
-```
 
 ---
 
