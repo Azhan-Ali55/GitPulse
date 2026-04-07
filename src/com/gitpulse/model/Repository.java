@@ -12,7 +12,7 @@ public class Repository {
     private List<Commit> commits;           // Storing all the commits of the repository
     private List<Contributor> contributors; // Storing all the Contributors of the repository
 
-    // Constructor to initialize the attributes
+    // Constructor
     public Repository(String owner, String name) {
         this.owner = owner;
         this.name = name;

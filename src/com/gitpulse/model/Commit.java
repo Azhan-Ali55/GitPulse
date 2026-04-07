@@ -8,7 +8,7 @@ public class Commit {
     private final String date;
     private final String message;
 
-    // Constructor to initialize these attributes
+    // Constructor
     public Commit (String sha, String authorName, String authorEmail,
                    String date, String message) {
         this.sha = sha;
