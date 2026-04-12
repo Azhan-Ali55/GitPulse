@@ -56,10 +56,10 @@ public class GitPulseJsonParser {
 
         // Check for null before parsing
         if (!obj.get("description").isJsonNull()) {
-            repository.setDescription(obj.get("description").getAsString());
+            repository.addDescription(obj.get("description").getAsString());
         }
         if (!obj.get("language").isJsonNull()) {
-            repository.setLanguage(obj.get("language").getAsString());
+            repository.addLanguage(obj.get("language").getAsString());
         }
     }
 }
