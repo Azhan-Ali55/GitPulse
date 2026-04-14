@@ -1,0 +1,35 @@
+package com.gitpulse.service;
+
+import com.gitpulse.algorithm.AlgorithmEngine;
+import com.gitpulse.algorithm.AlgorithmResult;
+import com.gitpulse.model.Contributor;
+import com.gitpulse.model.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+public class AnalysisService {
+    private final DataService dataService;
+    private final AlgorithmEngine engine;
+
+    public AnalysisService() {
+        this.dataService = new DataService();
+        this.engine      = new AlgorithmEngine();
+    }
+
+    // Full pipeline: fetch → parse → compute → return result
+    public AlgorithmResult analyse(String owner, String repoName) {
+        // Step 1: load all raw data (your existing API + parser layer)
+        Repository repository = dataService.loadRepository(owner, repoName);
+
+        // Step 2: run the algorithm
+        engine.calculateCommitShares(repository);     // populates commitShare on each Contributor
+
+        Map<String, Integer> weeklyActivity   = engine.getWeeklyActivity(repository);
+        Map<String, Double>  scores           = engine.scoreContributors(repository);
+        String               balanceWarning   = engine.checkContributorBalance(repository);
+        List<Contributor>    topContributors  = engine.getTopContributors(repository, 5);
+
+        return new AlgorithmResult(topContributors, weeklyActivity, scores, balanceWarning);
+    }
+}
