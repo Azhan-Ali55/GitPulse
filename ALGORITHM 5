@@ -1,0 +1,6 @@
+// ─── 5. TOP N CONTRIBUTORS ──────────────────────────────────────────────
+    public List<Contributor> getTopContributors(Repository repository, int n) {
+        List<Contributor> sorted = new ArrayList<>(repository.getContributors());
+        sorted.sort((a, b) -> Integer.compare(b.getTotalCommits(), a.getTotalCommits()));
+        return sorted.subList(0, Math.min(n, sorted.size()));
+    }
