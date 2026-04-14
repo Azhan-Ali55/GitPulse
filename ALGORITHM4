@@ -1,0 +1,17 @@
+// ─── 4. BALANCE WARNING ─────────────────────────────────────────────────
+    // If the top contributor holds more than 60% of commits, flag it.
+    public String checkContributorBalance(Repository repository) {
+        if (repository.getContributors().isEmpty()) return "No contributors found.";
+
+        Contributor top = repository.getContributors().stream()
+                .max(Comparator.comparingInt(Contributor::getTotalCommits))
+                .orElse(null);
+
+        if (top == null) return "Unable to assess balance.";
+
+        if (top.getCommitShare() > 60.0) {
+            return "Warning: " + top.getUsername() + " holds " +
+                    top.getCommitShare() + "% of commits. Bus factor risk.";
+        }
+        return "Contributor balance looks healthy.";
+    }
