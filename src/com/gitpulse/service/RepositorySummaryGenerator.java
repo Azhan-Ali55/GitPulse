@@ -3,9 +3,16 @@ package com.gitpulse.service;
 import com.gitpulse.model.Contributor;
 import com.gitpulse.model.Repository;
 
-public class SummaryGenerator {
+public class RepositorySummaryGenerator implements PromptGenerator {
+    private final Repository repository;
+
+    // Constructor
+    public RepositorySummaryGenerator(Repository repository) {
+        this.repository = repository;
+    }
     // Defining method to generate prompt
-    public String generatePrompt(Repository repository) {
+    @Override
+    public String generatePrompt(String data) {
         StringBuilder prompt = new StringBuilder();
         // Giving prompt
         prompt.append("Analyze this GitHub repository and give a short professional summary:\n\n");
@@ -30,6 +37,21 @@ public class SummaryGenerator {
         prompt.append("2. Team activity assessment\n");
         prompt.append("3. Any concerns about contributor balance\n");
         prompt.append("Keep the response concise and professional.");
+        return prompt.toString();
+    }
+
+    public String generateReadmePrompt(String readmeContent) {
+        StringBuilder prompt = new StringBuilder();
+
+        prompt.append("Analyze this GitHub repository README and give a short professional summary:\n\n");
+        prompt.append("README Content:\n");
+        prompt.append(readmeContent + "\n\n");
+        prompt.append("Based on this README please provide:\n");
+        prompt.append("1. What this project does in simple terms\n");
+        prompt.append("2. Who it is for\n");
+        prompt.append("3. Key features mentioned\n");
+        prompt.append("Keep the response concise and professional.");
+
         return prompt.toString();
     }
 }
