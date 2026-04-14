@@ -56,17 +56,22 @@ public class GitHubApiClient extends ApiClient {
 
     // Implementing abstract methods from ApiClient
     @Override
-    public String fetchRepositoryInfo(String owner, String repo) throws Exception {
-        return get("/repos/" + owner + "/" + repo);
+    public String fetchRepositoryInfo(String owner, String repository) throws Exception {
+        return get("/repos/" + owner + "/" + repository);
     }
 
     @Override
-    public String fetchCommits(String owner, String repo) throws Exception {
-        return get("/repos/" + owner + "/" + repo + "/commits?per_page=100");
+    public String fetchCommits(String owner, String repository) throws Exception {
+        return get("/repos/" + owner + "/" + repository + "/commits?per_page=100");
     }
 
     @Override
-    public String fetchContributors(String owner, String repo) throws Exception {
-        return get("/repos/" + owner + "/" + repo + "/contributors");
+    public String fetchContributors(String owner, String repository) throws Exception {
+        return get("/repos/" + owner + "/" + repository + "/contributors");
+    }
+
+    @Override
+    public String fetchReadme(String owner, String repository) throws Exception {
+        return get("/repos/" + owner + "/" + repository + "/readme");
     }
 }

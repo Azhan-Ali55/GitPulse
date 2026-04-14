@@ -12,7 +12,7 @@ public class RepositorySummaryGenerator implements PromptGenerator {
     }
     // Defining method to generate prompt
     @Override
-    public String generatePrompt(String data) {
+    public String generatePrompt() {
         StringBuilder prompt = new StringBuilder();
         // Giving prompt
         prompt.append("Analyze this GitHub repository and give a short professional summary:\n\n");

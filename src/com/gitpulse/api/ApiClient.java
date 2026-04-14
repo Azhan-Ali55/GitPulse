@@ -15,6 +15,7 @@ public abstract class ApiClient {
     public abstract String fetchRepositoryInfo(String owner, String repo) throws Exception;
     public abstract String fetchCommits(String owner, String repo) throws Exception;
     public abstract String fetchContributors(String owner, String repo) throws Exception;
+    public abstract String fetchReadme(String owner, String repo) throws Exception;
 
     // Concrete method to check if request is successful
     protected boolean isValidResponse(int statusCode) {
