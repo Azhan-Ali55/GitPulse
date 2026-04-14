@@ -18,4 +18,16 @@ public class Constants {
             return "";
         }
     }
+    // Loading Gemini API
+    public static final String GEMINI_API_KEY = loadGeminiKey();
+    private static String loadGeminiKey() {
+        try {
+            Properties props = new Properties();
+            props.load(new FileInputStream("config.properties"));
+            return props.getProperty("gemini.api.key");
+        } catch (Exception e) {
+            System.err.println("Gemini key not found");
+            return "";
+        }
+    }
 }
