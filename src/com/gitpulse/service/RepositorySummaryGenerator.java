@@ -39,19 +39,4 @@ public class RepositorySummaryGenerator implements PromptGenerator {
         prompt.append("Keep the response concise and professional.");
         return prompt.toString();
     }
-
-    public String generateReadmePrompt(String readmeContent) {
-        StringBuilder prompt = new StringBuilder();
-
-        prompt.append("Analyze this GitHub repository README and give a short professional summary:\n\n");
-        prompt.append("README Content:\n");
-        prompt.append(readmeContent + "\n\n");
-        prompt.append("Based on this README please provide:\n");
-        prompt.append("1. What this project does in simple terms\n");
-        prompt.append("2. Who it is for\n");
-        prompt.append("3. Key features mentioned\n");
-        prompt.append("Keep the response concise and professional.");
-
-        return prompt.toString();
-    }
 }
