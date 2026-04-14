@@ -1,6 +1,7 @@
 package com.gitpulse.api;
 
 import com.gitpulse.util.Constants;
+import com.gitpulse.util.ErrorHandler;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -48,12 +49,9 @@ public class GitHubApiClient extends ApiClient {
 
     // Error handling
     private void handleError(int statusCode) throws Exception {
-        switch (statusCode) {
-            case 401: throw new Exception("Invalid token! Check your GitHub token");
-            case 403: throw new Exception("Rate limit exceeded! Try again later");
-            case 404: throw new Exception("Repository not found!");
-            default:  throw new Exception("HTTP error: " + statusCode);
-        }
+        String message = ErrorHandler.handle(statusCode);
+        ErrorHandler.log("GitHubApiClient", message);
+        throw new Exception(message);
     }
 
     // Implementing abstract methods from ApiClient
