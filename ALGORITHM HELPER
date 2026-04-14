@@ -1,0 +1,19 @@
+// ─── HELPER ─────────────────────────────────────────────────────────────
+    // Returns a set of author names who committed within the last `days` days.
+    private Set<String> getRecentAuthors(Repository repository, int days) {
+        Set<String> recent = new HashSet<>();
+        LocalDate cutoff = LocalDate.now().minusDays(days);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        for (Commit commit : repository.getCommits()) {
+            try {
+                String dateStr = commit.getDate().substring(0, 10);
+                LocalDate commitDate = LocalDate.parse(dateStr, fmt);
+                if (!commitDate.isBefore(cutoff)) {
+                    recent.add(commit.getAuthorName());
+                }
+            } catch (Exception ignored) {}
+        }
+        return recent;
+    }
+}
