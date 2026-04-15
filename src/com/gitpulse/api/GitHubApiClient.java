@@ -74,4 +74,14 @@ public class GitHubApiClient extends ApiClient {
     public String fetchReadme(String owner, String repository) throws Exception {
         return get("/repos/" + owner + "/" + repository + "/readme");
     }
+
+    @Override
+    public String fetchCommitsByAuthor(String owner, String repo, String author) throws Exception {
+        return get("/repos/" + owner + "/" + repo + "/commits?author=" + author + "&per_page=1");
+    }
+
+    @Override
+    public String fetchWeeklyStats(String owner, String repo) throws Exception {
+        return get("/repos/" + owner + "/" + repo + "/stats/commit_activity");
+    }
 }
