@@ -4,6 +4,7 @@ public class ErrorHandler {
     // Handling all possible errors
     public static String handle(int statusCode) {
         switch (statusCode) {
+            case 202: return "GitHub is computing stats. Try again in a few seconds";
             case 401: return "Invalid token! Check your GitHub token";
             case 403: return "Rate limit exceeded! Try again later";
             case 404: return "Repository not found! Check owner and repo name";

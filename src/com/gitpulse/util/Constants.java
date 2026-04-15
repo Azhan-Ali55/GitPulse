@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class Constants {
     public static final String BASE_URL = "https://api.github.com";
-    public static final int TIMEOUT = 10000;
+    public static final int TIMEOUT = 30000;
     public static final String TOKEN = loadToken();
 
     private static String loadToken() {

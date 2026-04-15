@@ -17,6 +17,7 @@ public abstract class ApiClient {
     public abstract String fetchContributors(String owner, String repo) throws Exception;
     public abstract String fetchReadme(String owner, String repo) throws Exception;
     public abstract String fetchCommitsByAuthor(String owner, String repo, String author) throws Exception;
+    public abstract String fetchLastCommit(String owner, String repo) throws Exception;
     public abstract String fetchWeeklyStats(String owner, String repo) throws Exception;
 
     // Concrete method to check if request is successful
