@@ -36,10 +36,10 @@ public class LoginScreen {
         center.setAlignment(Pos.CENTER);
 //        center.setMaxWidth(1920);
 
-        // ── Logo ─────────────────────────────────────────────────────
+        //Logo
         Canvas logo = buildLogo(90, 90);
 
-        // ── Brand name ────────────────────────────────────────────────
+        //Brand name
         Label gitLabel = new Label("Git");
         gitLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 36));
         gitLabel.setTextFill(Color.web(WHITE));
@@ -60,7 +60,7 @@ public class LoginScreen {
         VBox logoSection = new VBox(10, logo, brandBox, tagline);
         logoSection.setAlignment(Pos.CENTER);
 
-        // ── Login Card ────────────────────────────────────────────────
+        //Login Card
         VBox card = new VBox(18);
         card.setStyle(
                 "-fx-background-color: " + SURFACE + ";" +
