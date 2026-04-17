@@ -52,6 +52,23 @@ public class DataService {
         }
         return repository;
     }
+
+    // Get AI summary of repository
+    public String getRepositorySummary(Repository repository) {
+        PromptGenerator generator = new RepositorySummaryGenerator(repository);
+        AiSummaryService aiService = new AiSummaryService();
+        return aiService.getSummary(generator);
+    }
+
+    // Get AI summary of README
+    public String getReadmeSummary(Repository repository) {
+        if (repository.getReadme() == null || repository.getReadme().isEmpty()) {
+            return "No README available for this repository.";
+        }
+        PromptGenerator generator = new ReadmeSummaryGenerator(repository.getReadme());
+        AiSummaryService aiService = new AiSummaryService();
+        return aiService.getSummary(generator);
+    }
 }
 
 // Defining class to wrap a unique task
