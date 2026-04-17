@@ -84,40 +84,4 @@ public class GitHubApiClient extends ApiClient {
     public String fetchLastCommit(String owner, String repo) throws Exception {
         return get("/repos/" + owner + "/" + repo + "/commits?per_page=1");
     }
-
-    @Override
-    public String fetchWeeklyStats(String owner, String repo) throws Exception {
-        String endpoint = "/repos/" + owner + "/" + repo + "/stats/commit_activity";
-        int maxRetries = 3; // Setting max tries to 3
-
-        // Loop to request 3 times at max
-        for (int attempt = 1; attempt <= maxRetries; attempt++) {
-            URL url = new URL(baseUrl + endpoint);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Authorization", "token " + token);
-            connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
-            connection.setRequestProperty("User-Agent", "GitPulse-App");
-
-            int statusCode = connection.getResponseCode();
-
-            if (statusCode == 200) {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) response.append(line);
-                reader.close();
-                return response.toString();
-            } else if (statusCode == 202) {
-                ErrorHandler.log("GitHubApiClient",
-                        "Stats not ready — attempt " + attempt + " of " + maxRetries +
-                                " — waiting 3 seconds");
-                Thread.sleep(3000);
-            } else {
-                handleError(statusCode);
-            }
-        }
-        return "[]"; // return empty array if stats never become ready
-    }
 }

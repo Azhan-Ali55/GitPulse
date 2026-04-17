@@ -37,8 +37,19 @@ public class GitPulse {
 
         // Test 5 — weekly stats
         System.out.println("\n=== WEEKLY STATS ===");
-        System.out.println(repo.getWeeklyStats() != null ?
-                "Weekly stats loaded: " + repo.getWeeklyStats().size() + " weeks" : "No stats");
+        var weekly = repo.getWeeklyActivity();
+
+        if (weekly == null || weekly.isEmpty()) {
+            System.out.println("No stats available");
+        } else {
+            for (var entry : weekly.entrySet()) {
+                System.out.println("\nWeek starting: " + entry.getKey());
+                for (var commit : entry.getValue()) {
+                    System.out.println("- " + commit.getMessage() +
+                            " by " + commit.getAuthorName());
+                }
+            }
+        }
 
         // Test 6 — AI repository summary
         System.out.println("\n=== AI REPOSITORY SUMMARY ===");

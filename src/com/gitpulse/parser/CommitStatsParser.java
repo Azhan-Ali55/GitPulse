@@ -3,7 +3,7 @@ package com.gitpulse.parser;
 import java.time.*;
 import java.util.*;
 import com.gitpulse.model.Repository;
-import com.gitpulse.model.CommitInfo;
+import com.gitpulse.model.Commit;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,18 +16,18 @@ public class CommitStatsParser extends BaseJsonParser {
         JsonArray array = JsonParser.parseString(json).getAsJsonArray();
 
         // TreeMap keeps keys sorted
-        Map<LocalDate, List<CommitInfo>> weeklyMap = new TreeMap<>();
+        Map<LocalDate, List<Commit>> weeklyMap = new TreeMap<>();
 
         for (JsonElement element : array) {
+            // Extreat
             JsonObject obj = element.getAsJsonObject();
+            String sha = obj.get("sha").getAsString();
             JsonObject commitObj = obj.getAsJsonObject("commit");
             String message = commitObj.get("message").getAsString();
-
-            String dateStr = commitObj.getAsJsonObject("author")
-                    .get("date").getAsString();
-
-            String author = commitObj.getAsJsonObject("author")
-                    .get("name").getAsString();
+            JsonObject authorObj = commitObj.getAsJsonObject("author");
+            String authorName = authorObj.get("name").getAsString();
+            String authorEmail = authorObj.get("email").getAsString();
+            String dateStr = authorObj.get("date").getAsString();
 
             // Convert string timestamp to Instant
             Instant instant = Instant.parse(dateStr);
@@ -41,7 +41,7 @@ public class CommitStatsParser extends BaseJsonParser {
             // Group commits by weekStart date:
             weeklyMap
                     .computeIfAbsent(weekStart, k -> new ArrayList<>())
-                    .add(new CommitInfo(message, author, dateStr));
+                    .add(new Commit(sha, authorName, authorEmail, dateStr, message));
         }
         // Store computed weekly grouping inside repository object
         repository.setWeeklyActivity(weeklyMap);

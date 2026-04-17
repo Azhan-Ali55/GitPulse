@@ -1,5 +1,7 @@
 package com.gitpulse.model;
 
+import java.util.Map;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,8 @@ public class Repository {
     private String lastCommitDate;
     private List<Commit> commits;           // Storing all the commits of the repository
     private List<Contributor> contributors; // Storing all the Contributors of the repository
-    private List<Integer> weeklyStats;      // Storing weeklyStats of the repository
+    private Map<LocalDate, List<Commit>> weeklyActivity; // Storing weeklyActivity in groupwise format
+
 
     // Constructor
     public Repository(String owner, String name) {
@@ -28,7 +31,7 @@ public class Repository {
     public void addContributor(Contributor c) { contributors.add(c); }
     public void addReadme(String readme) { this.readme = readme; }
     public void addLastCommitDate(String date) { this.lastCommitDate = date; }
-    public void addWeeklyStats(List<Integer> stats) { this.weeklyStats = stats; }
+    public void setWeeklyActivity(Map<LocalDate, List<Commit>> data) { this.weeklyActivity = data; }
 
     // Setters for fields fetched from API
     public void addDescription(String description) { this.description = description; }
@@ -43,7 +46,7 @@ public class Repository {
     public String getLastCommitDate() { return lastCommitDate; }
     public List<Commit> getCommits() { return commits; }
     public List<Contributor> getContributors() { return contributors; }
-    public List<Integer> getWeeklyStats() { return weeklyStats; }
+    public Map<LocalDate, List<Commit>> getWeeklyActivity() { return weeklyActivity; }
 
     // toString method to view the Repository details
     @Override

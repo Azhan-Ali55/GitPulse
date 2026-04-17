@@ -30,8 +30,8 @@ public class DataService {
                     new ParserTask(new ContributorsParser(),
                             apiClient.fetchContributors(owner, repositoryName)),
 
-                    new ParserTask(new WeeklyStatsParser(),
-                            apiClient.fetchWeeklyStats(owner, repositoryName)),
+                    new ParserTask(new CommitStatsParser(),
+                            apiClient.fetchCommits(owner, repositoryName)),
 
                     new ParserTask(new ReadmeParser(),
                             apiClient.fetchReadme(owner, repositoryName)),
