@@ -1,39 +1,84 @@
 package com.gitpulse.service;
 
+import java.util.List;
 import com.gitpulse.api.GitHubApiClient;
 import com.gitpulse.model.Repository;
-import com.gitpulse.parser.GitPulseJsonParser;
+import com.gitpulse.parser.*;
+import com.gitpulse.util.ErrorHandler;
 
 public class DataService {
     // Declaring attributes
     private final GitHubApiClient apiClient;
-    private final GitPulseJsonParser parser;
 
     // Constructor
     public DataService() {
         this.apiClient = new GitHubApiClient();
-        this.parser    = new GitPulseJsonParser();
     }
 
-    // Method to return all the repository data
+    // Method to load all the repository data
     public Repository loadRepository(String owner, String repositoryName) {
         Repository repository = new Repository(owner, repositoryName);
-
         try {
-            // Fetch and parse repository info
-            String repoJson = apiClient.fetchRepositoryInfo(owner, repositoryName);
-            parser.parseRepositoryInfo(repoJson, repository);
+            // Define a list of parsing tasks
+            List<ParserTask> tasks = List.of(
+                    new ParserTask(new RepositoryParser(),
+                            apiClient.fetchRepositoryInfo(owner, repositoryName)),
 
-            // Fetch and parse commits
-            String commitsJson = apiClient.fetchCommits(owner, repositoryName);
-            parser.parseCommits(commitsJson, repository);
+                    new ParserTask(new CommitsParser(),
+                            apiClient.fetchCommits(owner, repositoryName)),
 
-            // Step 3 — fetch and parse contributors
-            String contributorsJson = apiClient.fetchContributors(owner, repositoryName);
-            parser.parseContributors(contributorsJson, repository);
+                    new ParserTask(new ContributorsParser(),
+                            apiClient.fetchContributors(owner, repositoryName)),
+
+                    new ParserTask(new CommitStatsParser(),
+                            apiClient.fetchCommits(owner, repositoryName)),
+
+                    new ParserTask(new ReadmeParser(),
+                            apiClient.fetchReadme(owner, repositoryName)),
+
+                    new ParserTask(new LastCommitDateParser(),
+                            apiClient.fetchLastCommit(owner, repositoryName))
+            );
+            for (ParserTask task : tasks) {
+                try {
+                    if (task.json == null || task.json.isEmpty()) continue;
+                    task.parser.parse(task.json, repository);
+                } catch (Exception e) {
+                    ErrorHandler.log("DataService", "Parser failed: " + e.getMessage());
+                }
+            }
         } catch (Exception e) {
-            System.err.println("Error loading repository: " + e.getMessage());
+            ErrorHandler.log("DataService", "Error loading repository: " + e.getMessage());
         }
         return repository;
+    }
+
+    // Get AI summary of repository
+    public String getRepositorySummary(Repository repository) {
+        PromptGenerator generator = new RepositorySummaryGenerator(repository);
+        AiSummaryService aiService = new AiSummaryService();
+        return aiService.getSummary(generator);
+    }
+
+    // Get AI summary of README
+    public String getReadmeSummary(Repository repository) {
+        if (repository.getReadme() == null || repository.getReadme().isEmpty()) {
+            return "No README available for this repository.";
+        }
+        PromptGenerator generator = new ReadmeSummaryGenerator(repository.getReadme());
+        AiSummaryService aiService = new AiSummaryService();
+        return aiService.getSummary(generator);
+    }
+}
+
+// Defining class to wrap a unique task
+class ParserTask {
+    GitHubJsonParser parser;
+    String json;
+
+    // Constructor
+    ParserTask(GitHubJsonParser parser, String json) {
+        this.parser = parser;
+        this.json = json;
     }
 }

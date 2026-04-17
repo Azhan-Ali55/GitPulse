@@ -81,7 +81,7 @@ public class GitHubApiClient extends ApiClient {
     }
 
     @Override
-    public String fetchWeeklyStats(String owner, String repo) throws Exception {
-        return get("/repos/" + owner + "/" + repo + "/stats/commit_activity");
+    public String fetchLastCommit(String owner, String repo) throws Exception {
+        return get("/repos/" + owner + "/" + repo + "/commits?per_page=1");
     }
 }

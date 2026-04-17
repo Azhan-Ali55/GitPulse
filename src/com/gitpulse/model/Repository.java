@@ -1,5 +1,7 @@
 package com.gitpulse.model;
 
+import java.util.Map;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +11,12 @@ public class Repository {
     private final String name;
     private String description;
     private String language;
+    private String readme;
+    private String lastCommitDate;
     private List<Commit> commits;           // Storing all the commits of the repository
     private List<Contributor> contributors; // Storing all the Contributors of the repository
+    private Map<LocalDate, List<Commit>> weeklyActivity; // Storing weeklyActivity in groupwise format
+
 
     // Constructor
     public Repository(String owner, String name) {
@@ -20,9 +26,12 @@ public class Repository {
         this.contributors = new ArrayList<>();
     }
 
-    // Setters for adding commits and contributors
+    // Setters for repository data
     public void addCommit(Commit c) { commits.add(c); }
     public void addContributor(Contributor c) { contributors.add(c); }
+    public void addReadme(String readme) { this.readme = readme; }
+    public void addLastCommitDate(String date) { this.lastCommitDate = date; }
+    public void setWeeklyActivity(Map<LocalDate, List<Commit>> data) { this.weeklyActivity = data; }
 
     // Setters for fields fetched from API
     public void addDescription(String description) { this.description = description; }
@@ -33,8 +42,11 @@ public class Repository {
     public String getName() { return name; }
     public String getDescription() { return description; }
     public String getLanguage() { return language; }
+    public String getReadme() { return readme; }
+    public String getLastCommitDate() { return lastCommitDate; }
     public List<Commit> getCommits() { return commits; }
     public List<Contributor> getContributors() { return contributors; }
+    public Map<LocalDate, List<Commit>> getWeeklyActivity() { return weeklyActivity; }
 
     // toString method to view the Repository details
     @Override
