@@ -154,7 +154,7 @@ public class LoginScreen {
 
         // ── Powered by ────────────────────────────────────────────────
         Label powered = new Label("Powered by Gate");
-        powered.setFont(Font.font("Segoe UI", 11));
+        powered.setFont(Font.font("Segoe UI", 15));
         powered.setTextFill(Color.web(CYAN + "66"));
         powered.setStyle("-fx-padding: 0 0 14 0;");
         StackPane.setAlignment(powered, Pos.BOTTOM_CENTER);
