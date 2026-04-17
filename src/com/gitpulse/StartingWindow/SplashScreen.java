@@ -71,14 +71,14 @@ public class SplashScreen {
         StackPane spinnerWrap = new StackPane(spinner);
         spinnerWrap.setPrefSize(60, 60);
 
-        // ── Loading label ─────────────────────────────────────────────
+        // Loading label
         Label loading = new Label("Initializing...");
         loading.setFont(Font.font("Segoe UI", 12));
         loading.setTextFill(Color.web(WHITE + "66"));
 
         center.getChildren().addAll(logo, name, tagline, spinnerWrap, loading);
 
-        // ── "Powered by Gate" bottom-left ─────────────────────────────
+        // "Powered by Gate" bottom-left
         Label powered = new Label("Powered by Gate");
         powered.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 11));
         powered.setTextFill(Color.web(CYAN + "99"));
