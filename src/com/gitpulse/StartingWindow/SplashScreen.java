@@ -94,7 +94,7 @@ public class SplashScreen {
         stage.setTitle("GitPulse");
         stage.show();
 
-        // ── Zoom-from-center entrance animation ───────────────────────
+        // Zoom-from-center entrance animation
         center.setScaleX(0.01);
         center.setScaleY(0.01);
         center.setOpacity(0);
@@ -113,7 +113,7 @@ public class SplashScreen {
         ParallelTransition entrance = new ParallelTransition(zoomIn, fadeIn);
         entrance.play();
 
-        // ── Wait 5 s then open Dashboard ──────────────────────────────
+        // Wait 5 s then open Dashboard
         PauseTransition wait = new PauseTransition(Duration.seconds(5));
         wait.setOnFinished(e -> {
             spin.stop();
@@ -124,7 +124,7 @@ public class SplashScreen {
         entrance.setOnFinished(ev -> wait.play());
     }
 
-    // ── Build the GitPulse logo on a Canvas ───────────────────────────
+    //Build the GitPulse logo on a Canvas
     private Canvas buildLogo(double w, double h) {
         Canvas c = new Canvas(w, h);
         GraphicsContext gc = c.getGraphicsContext2D();
