@@ -1,8 +1,7 @@
 package com.gitpulse.GUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import startingwindow.SplashScreen;
-
+import com.gitpulse.StartingWindow.SplashScreen;
 public class MainApp extends Application {
 
     @Override

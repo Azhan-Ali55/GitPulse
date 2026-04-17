@@ -1,6 +1,6 @@
+
 package com.gitpulse.dashboard;
-
-
+import com.gitpulse.dashboard.DashboardScreen;
 import javafx.animation.*;
         import javafx.geometry.*;
         import javafx.scene.Scene;

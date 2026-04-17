@@ -1,8 +1,8 @@
 package com.gitpulse.StartingWindow;
 
+import com.gitpulse.dashboard.DashboardScreen;
 
 
-import dashboard.DashboardScreen;
 import javafx.animation.*;
         import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -46,7 +46,7 @@ public class SplashScreen {
         name.setTextFill(Color.web(CYAN));
         // glow effect via drop-shadow
         name.setStyle(
-                "-fx-effect: dropshadow(gaussian, #00D4FF, 18, 0.6, 0, 0);"
+                "-fx-effect: dropshadow(gaussian, #00D4FF, 6, 0.25, 0, 0);"
         );
 
         // ── Tagline ───────────────────────────────────────────────────
