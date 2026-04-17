@@ -1,6 +1,6 @@
 package com.gitpulse.StartingWindow;
 
-import com.gitpulse.dashboard.DashboardScreen;
+import com.gitpulse.dashboard.LoginScreen;
 
 
 import javafx.animation.*;
@@ -30,7 +30,7 @@ public class SplashScreen {
         // ── Root pane ─────────────────────────────────────────────────
         StackPane root = new StackPane();
         root.setStyle("-fx-background-color: " + NAVY + ";");
-        root.setPrefSize(720, 480);
+        root.setPrefSize(1280 , 800);
 
         // ── Center content VBox ───────────────────────────────────────
         VBox center = new VBox(18);
@@ -88,9 +88,10 @@ public class SplashScreen {
         root.getChildren().addAll(center, powered);
 
         // ── Scene ─────────────────────────────────────────────────────
-        Scene scene = new Scene(root, 720, 480);
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.initStyle(StageStyle.UNDECORATED);
+        stage.setMaximized(true);
         stage.setTitle("GitPulse");
         stage.show();
 
@@ -117,7 +118,7 @@ public class SplashScreen {
         PauseTransition wait = new PauseTransition(Duration.seconds(5));
         wait.setOnFinished(e -> {
             spin.stop();
-            DashboardScreen dashboard = new DashboardScreen();
+            LoginScreen dashboard = new LoginScreen();
             dashboard.show(stage);
         });
 
