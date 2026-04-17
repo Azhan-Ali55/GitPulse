@@ -19,28 +19,27 @@ import javafx.util.Duration;
 
 public class SplashScreen {
 
-    // ── 3 project colors ──────────────────────────────────────────────
+    //3  Whole project colors
     private static final String NAVY  = "#0D1117";
     private static final String CYAN  = "#00D4FF";
     private static final String WHITE = "#E6EDF3";
-    // ──────────────────────────────────────────────────────────────────
 
     public void show(Stage stage) {
 
-        // ── Root pane ─────────────────────────────────────────────────
+        //Root Pane
         StackPane root = new StackPane();
         root.setStyle("-fx-background-color: " + NAVY + ";");
         root.setPrefSize(1280 , 800);
 
-        // ── Center content VBox ───────────────────────────────────────
+        // Center content VBox
         VBox center = new VBox(18);
         center.setAlignment(Pos.CENTER);
         center.setTranslateY(-20);
 
-        // ── Logo (SVG-style drawn with Canvas) ────────────────────────
+        // Logo (SVG-style drawn with Canvas)
         Canvas logo = buildLogo(120, 120);
 
-        // ── "GitPulse" name ───────────────────────────────────────────
+        //GitPulse name
         Label name = new Label("GitPulse");
         name.setFont(Font.font("Segoe UI", FontWeight.BOLD, 48));
         name.setTextFill(Color.web(CYAN));
@@ -49,12 +48,12 @@ public class SplashScreen {
                 "-fx-effect: dropshadow(gaussian, #00D4FF, 6, 0.25, 0, 0);"
         );
 
-        // ── Tagline ───────────────────────────────────────────────────
+        // Tagline
         Label tagline = new Label("Instant Repository Analytics");
         tagline.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 15));
         tagline.setTextFill(Color.web(WHITE + "99"));
 
-        // ── Spinner ───────────────────────────────────────────────────
+        //Spinner
         Arc spinner = new Arc(0, 0, 22, 22, 90, 270);
         spinner.setType(ArcType.OPEN);
         spinner.setStroke(Color.web(CYAN));
@@ -87,7 +86,7 @@ public class SplashScreen {
 
         root.getChildren().addAll(center, powered);
 
-        // ── Scene ─────────────────────────────────────────────────────
+        //Scene
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.initStyle(StageStyle.UNDECORATED);
