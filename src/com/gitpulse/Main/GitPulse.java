@@ -1,3 +1,5 @@
+package com.gitpulse.Main;
+
 import com.gitpulse.model.Contributor;
 import com.gitpulse.model.Repository;
 import com.gitpulse.service.DataService;
