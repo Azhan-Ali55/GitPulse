@@ -40,13 +40,17 @@ public class SplashScreen {
         Canvas logo = buildLogo(120, 120);
 
         //GitPulse name
-        Label name = new Label("GitPulse");
-        name.setFont(Font.font("Segoe UI", FontWeight.BOLD, 48));
-        name.setTextFill(Color.web(CYAN));
-        // glow effect via drop-shadow
-        name.setStyle(
-                "-fx-effect: dropshadow(gaussian, #00D4FF, 6, 0.25, 0, 0);"
-        );
+        Label gitLabel = new Label("Git");
+        gitLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 48));
+        gitLabel.setTextFill(Color.web(WHITE));
+
+        Label pulseLabel = new Label("Pulse");
+        pulseLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 48));
+        pulseLabel.setTextFill(Color.web(CYAN));
+        pulseLabel.setStyle("-fx-effect: dropshadow(gaussian, #00D4FF, 6, 0.25, 0, 0);");
+
+        HBox nameBox = new HBox(0, gitLabel, pulseLabel);
+        nameBox.setAlignment(Pos.CENTER);
 
         // Tagline
         Label tagline = new Label("Instant Repository Analytics");
@@ -75,7 +79,7 @@ public class SplashScreen {
         loading.setFont(Font.font("Segoe UI", 12));
         loading.setTextFill(Color.web(WHITE + "66"));
 
-        center.getChildren().addAll(logo, name, tagline, spinnerWrap, loading);
+        center.getChildren().addAll(logo, nameBox, tagline, spinnerWrap, loading);
 
         // "Powered by Gate" bottom-left
         Label powered = new Label("Powered by Gate");
