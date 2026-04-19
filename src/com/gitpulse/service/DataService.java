@@ -3,6 +3,7 @@ package com.gitpulse.service;
 import java.util.List;
 import com.gitpulse.api.GitHubApiClient;
 import com.gitpulse.model.Repository;
+import com.gitpulse.model.WeeklySummary;
 import com.gitpulse.parser.*;
 import com.gitpulse.util.ErrorHandler;
 
@@ -68,6 +69,32 @@ public class DataService {
         PromptGenerator generator = new ReadmeSummaryGenerator(repository.getReadme());
         AiSummaryService aiService = new AiSummaryService();
         return aiService.getSummary(generator);
+    }
+
+    // Get AI summary of weekly stats
+    public List<WeeklySummary> getWeeklySummaries(Repository repo) {
+
+        WeeklySummaryService service = new WeeklySummaryService();
+        List<WeeklySummary> summaries =
+                service.generate(repo.getWeeklyActivity());
+
+        for (WeeklySummary ws : summaries) {
+            PromptGenerator generator = new WeeklySummaryGenerator(ws);
+            AiSummaryService ai = new AiSummaryService();
+
+            ws.setSummaryText(ai.getSummary(generator));
+        }
+        return summaries;
+    }
+
+    // Method for background threading for JavaFX
+    public javafx.concurrent.Task<Repository> loadRepositoryAsync(String owner, String repositoryName) {
+        return new javafx.concurrent.Task<>() {
+            @Override
+            protected Repository call() {
+                return loadRepository(owner, repositoryName);
+            }
+        };
     }
 }
 

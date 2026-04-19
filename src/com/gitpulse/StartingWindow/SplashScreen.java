@@ -108,7 +108,7 @@ public class SplashScreen {
         zoomIn.setFromY(0.01);
         zoomIn.setToX(1.0);
         zoomIn.setToY(1.0);
-        zoomIn.setInterpolator(Interpolator.SPLINE(0.17, 0.67, 0.35, 1.4)); // overshoot spring
+        zoomIn.setInterpolator(Interpolator.SPLINE(0.17, 0.67, 0.35, 1.0)); // overshoot spring
 
         FadeTransition fadeIn = new FadeTransition(Duration.millis(700), center);
         fadeIn.setFromValue(0);

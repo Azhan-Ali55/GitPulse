@@ -1,3 +1,5 @@
+package com.gitpulse.Main;
+
 import com.gitpulse.model.Contributor;
 import com.gitpulse.model.Repository;
 import com.gitpulse.service.DataService;
@@ -35,20 +37,16 @@ public class GitPulse {
         System.out.println("\n=== README ===");
         System.out.println(repo.getReadme() != null ? "README loaded successfully" : "No README");
 
-        // Test 5 — weekly stats
-        System.out.println("\n=== WEEKLY STATS ===");
-        var weekly = repo.getWeeklyActivity();
+        // Test 5- weekly summary
+        var summaries = service.getWeeklySummaries(repo);
 
-        if (weekly == null || weekly.isEmpty()) {
-            System.out.println("No stats available");
-        } else {
-            for (var entry : weekly.entrySet()) {
-                System.out.println("\nWeek starting: " + entry.getKey());
-                for (var commit : entry.getValue()) {
-                    System.out.println("- " + commit.getMessage() +
-                            " by " + commit.getAuthorName());
-                }
-            }
+        System.out.println("\n=== WEEKLY SUMMARIES ===");
+
+        for (var ws : summaries) {
+            System.out.println("\nWeek: " + ws.getWeekStart());
+            System.out.println("Commits: " + ws.getTotalCommits());
+            System.out.println("Top Author: " + ws.getTopAuthor());
+            System.out.println("AI Summary: " + ws.getSummaryText());
         }
 
         // Test 6 — AI repository summary

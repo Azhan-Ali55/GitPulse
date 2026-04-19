@@ -1,9 +1,0 @@
-AnalysisService analysis = new AnalysisService();
-AlgorithmResult result = analysis.analyse("torvalds", "linux");
-
-System.out.println(result);
-
-// Then feed into your existing prompt generator:
-RepositorySummaryGenerator gen = new RepositorySummaryGenerator(/* repository */);
-String prompt = gen.generatePrompt(result.toString());
-// → send prompt to Gemini
