@@ -51,6 +51,12 @@ public class GitHubApiClient extends ApiClient {
     private void handleError(int statusCode) throws Exception {
         String message = ErrorHandler.handle(statusCode);
         ErrorHandler.log("GitHubApiClient", message);
+        if (statusCode == 403) {
+            // Rate limit — wait 10 seconds and throw so caller can retry
+            try { Thread.sleep(10000); } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+        }
         throw new Exception(message);
     }
 
