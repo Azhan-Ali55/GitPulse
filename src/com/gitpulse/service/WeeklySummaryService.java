@@ -11,7 +11,8 @@ public class WeeklySummaryService {
 
         List<WeeklySummary> summaries = new ArrayList<>();
 
-        // Loop to process one week at a time
+        if (weeklyMap == null || weeklyMap.isEmpty()) return summaries;
+
         for (var entry : weeklyMap.entrySet()) {
             LocalDate week = entry.getKey();
             List<Commit> commits = entry.getValue();
