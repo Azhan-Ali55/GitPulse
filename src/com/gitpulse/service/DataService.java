@@ -86,6 +86,16 @@ public class DataService {
         }
         return summaries;
     }
+
+    // Method for background threading for JavaFX
+    public javafx.concurrent.Task<Repository> loadRepositoryAsync(String owner, String repositoryName) {
+        return new javafx.concurrent.Task<>() {
+            @Override
+            protected Repository call() {
+                return loadRepository(owner, repositoryName);
+            }
+        };
+    }
 }
 
 // Defining class to wrap a unique task
