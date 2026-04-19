@@ -24,8 +24,8 @@ public class LoginScreen {
     private static final String BORDER  = "#21262D";
 
     // Dummy credentials for now
-    private static final String DUMMY_REPO = "https://github.com/dummy/gitpulse-demo";
-    private static final String DUMMY_USER = "gitpulse";
+//    private static final String DUMMY_REPO = "https://github.com/dummy/gitpulse-demo";
+//    private static final String DUMMY_USER = "gitpulse";
 
     public void show(Stage stage) {
 
@@ -116,6 +116,7 @@ public class LoginScreen {
         analyzeBtn.setOnMouseEntered(e -> stylePrimaryButton(analyzeBtn, true));
         analyzeBtn.setOnMouseExited(e -> stylePrimaryButton(analyzeBtn, false));
 
+
         analyzeBtn.setOnAction(e -> {
             String repo = repoField.getText().trim();
             String user = userField.getText().trim();
@@ -126,19 +127,29 @@ public class LoginScreen {
                 return;
             }
 
-            // Dummy validation
-            if (repo.equals(DUMMY_REPO) && user.equalsIgnoreCase(DUMMY_USER)) {
-                errorLabel.setVisible(false);
-                DashboardScreen dashboard = new DashboardScreen(repo, user);
-                dashboard.show(stage);
-            } else {
-                errorLabel.setText("⚠  Invalid credentials. Use the demo repo to continue.");
+            // Validate GitHub URL format
+            if (!repo.startsWith("https://github.com/")) {
+                errorLabel.setText("⚠  URL must start with https://github.com/");
                 errorLabel.setVisible(true);
+                return;
             }
+
+            // Validate URL has owner/repo format
+            String path = repo.replace("https://github.com/", "").trim();
+            String[] parts = path.split("/");
+            if (parts.length < 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
+                errorLabel.setText("⚠  URL must be: https://github.com/username/repository");
+                errorLabel.setVisible(true);
+                return;
+            }
+
+            errorLabel.setVisible(false);
+            DashboardScreen dashboard = new DashboardScreen(repo, user);
+            dashboard.show(stage);
         });
 
         // Demo hint
-        Label hint = new Label("Demo → URL: " + DUMMY_REPO + "  |  User: " + DUMMY_USER);
+        Label hint = new Label("Example: https://github.com/torvalds/linux");
         hint.setFont(Font.font("Segoe UI", 11));
         hint.setTextFill(Color.web(WHITE + "44"));
         hint.setWrapText(true);
