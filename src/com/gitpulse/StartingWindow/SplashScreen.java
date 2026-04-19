@@ -30,6 +30,7 @@ public class SplashScreen {
         StackPane root = new StackPane();
         root.setStyle("-fx-background-color: " + NAVY + ";");
         root.setPrefSize(1280 , 800);
+//        root.setPrefSize(1280 , 800);
 
         // Center content VBox
         VBox center = new VBox(18);
