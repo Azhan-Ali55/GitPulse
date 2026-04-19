@@ -11,6 +11,10 @@ public class DataService {
     // Declaring attributes
     private final GitHubApiClient apiClient;
 
+    // Simple in-memory cache to avoid re-fetching same repo
+    private static final java.util.Map<String, Repository> cache =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
     // Constructor
     public DataService() {
         this.apiClient = new GitHubApiClient();
@@ -18,6 +22,13 @@ public class DataService {
 
     // Method to load all the repository data
     public Repository loadRepository(String owner, String repositoryName) {
+        // Return cached version if available
+        String cacheKey = owner + "/" + repositoryName;
+        if (cache.containsKey(cacheKey)) {
+            ErrorHandler.log("DataService", "Returning cached repo: " + cacheKey);
+            return cache.get(cacheKey);
+        }
+
         Repository repository = new Repository(owner, repositoryName);
         try {
             // Define a list of parsing tasks
@@ -51,9 +62,10 @@ public class DataService {
         } catch (Exception e) {
             ErrorHandler.log("DataService", "Error loading repository: " + e.getMessage());
         }
+        // Cache the result
+        cache.put(owner + "/" + repositoryName, repository);
         return repository;
     }
-
     // Get AI summary of repository
     public String getRepositorySummary(Repository repository) {
         PromptGenerator generator = new RepositorySummaryGenerator(repository);
