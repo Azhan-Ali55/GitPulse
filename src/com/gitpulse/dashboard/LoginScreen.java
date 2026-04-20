@@ -35,7 +35,7 @@ public class LoginScreen {
 
         VBox center = new VBox(32);
         center.setAlignment(Pos.CENTER);
-
+        root.setPrefSize(1280,800);
         // ── Logo section ──────────────────────────────────────────────
         Canvas logo = buildLogo(90, 90);
 
@@ -85,7 +85,7 @@ public class LoginScreen {
         ownerLabel.setTextFill(Color.web(CYAN));
 
         TextField ownerField = new TextField();
-        ownerField.setPromptText("e.g. Azhan-Ali55");
+        ownerField.setPromptText("e.g. Thomas-55");
         styleTextField(ownerField);
         ownerField.focusedProperty().addListener((obs, old, f) -> styleTextFieldFocus(ownerField, f));
 
@@ -95,7 +95,7 @@ public class LoginScreen {
         repoLabel.setTextFill(Color.web(CYAN));
 
         TextField repoField = new TextField();
-        repoField.setPromptText("e.g. sudoku");
+        repoField.setPromptText("e.g. Fuel-Management-System");
         styleTextField(repoField);
         repoField.focusedProperty().addListener((obs, old, f) -> styleTextFieldFocus(repoField, f));
 
