@@ -1,9 +1,10 @@
 package com.gitpulse.Home;
 
+import com.gitpulse.Algorithm.RepositoryReport;
+import com.gitpulse.dashboard.LoginScreen;
 import com.gitpulse.model.Commit;
 import com.gitpulse.model.Contributor;
 import com.gitpulse.model.Repository;
-import com.gitpulse.model.WeeklySummary;
 import com.gitpulse.service.DataService;
 
 import javafx.animation.*;
@@ -35,49 +36,56 @@ public class DashboardScreen {
     private static final String BORDER  = "#21262D";
 
     // ── State ─────────────────────────────────────────────────────────
-    private final String repoUrl;
-    private final String username;
-    private final String owner;
-    private final String repoName;
+    private final String          owner;
+    private final String          repoName;
+    private       Repository      loadedRepo;
+    private final RepositoryReport report;
 
     // The center content area — swapped when sidebar buttons are clicked
     private StackPane centerArea;
-    private Repository loadedRepo = null;
 
-    public DashboardScreen(String repoUrl, String username) {
-        this.repoUrl  = repoUrl;
-        this.username = username;
+    // ─────────────────────────────────────────────────────────────────
+    // ── Constructor ───────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────
 
-        // Parse owner and repo name from URL
-        // e.g. https://github.com/torvalds/linux → owner=torvalds, repo=linux
-        String path = repoUrl.replace("https://github.com/", "").trim();
-        String[] parts = path.split("/");
-        this.owner    = parts.length > 0 ? parts[0] : username;
-        this.repoName = parts.length > 1 ? parts[1] : "unknown";
+    /**
+     * Primary constructor — called from LoginScreen after data is already
+     * fetched and analysed on a background thread.
+     *
+     * @param repository the fully-loaded Repository model
+     * @param report     the RepositoryReport produced by RepositoryAnalyzer
+     */
+    public DashboardScreen(Repository repository, RepositoryReport report) {
+        this.loadedRepo = repository;
+        this.report     = report;
+        this.owner      = repository.getOwner();
+        this.repoName   = repository.getName();
     }
 
+    // ─────────────────────────────────────────────────────────────────
+    // ── show ──────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────
     public void show(Stage stage) {
 
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: " + NAVY + ";");
-        root.setPrefSize(1280 , 800);
-        // Top bar
-        root.setTop(buildTopBar());
+        root.setPrefSize(1280, 800);
 
-        // Sidebar
+        root.setTop(buildTopBar());
         root.setLeft(buildSidebar());
 
-        // Center — starts with loading spinner
         centerArea = new StackPane();
         centerArea.setStyle("-fx-background-color: " + NAVY + ";");
         root.setCenter(centerArea);
 
-        // Scene
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.setTitle("GitPulse — Dashboard");
         stage.show();
+
+        // Data already loaded — go straight to summary
+        showSummaryPanel();
 
         // Entrance animation
         root.setOpacity(0);
@@ -87,35 +95,12 @@ public class DashboardScreen {
         TranslateTransition slide = new TranslateTransition(Duration.millis(600), root);
         slide.setToY(0);
         new ParallelTransition(fade, slide).play();
-
-        // Start fetching real data
-        fetchData();
     }
 
-    // ── Fetch data from GitHub on background thread ───────────────────
-    private void fetchData() {
-        showLoading("Fetching repository data from GitHub...");
+    // ─────────────────────────────────────────────────────────────────
+    // ── Loading / Error helpers ───────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────
 
-        DataService dataService = new DataService();
-        Task<Repository> task = dataService.loadRepositoryAsync(owner, repoName);
-
-        task.setOnSucceeded(e -> {
-            loadedRepo = task.getValue();
-            Platform.runLater(() -> showSummaryPanel());
-        });
-
-        task.setOnFailed(e -> {
-            Platform.runLater(() -> showError(
-                    "Failed to load repository. Check your GitHub token and repo URL."
-            ));
-        });
-
-        Thread thread = new Thread(task);
-        thread.setDaemon(true);
-        thread.start();
-    }
-
-    // ── Loading spinner panel ─────────────────────────────────────────
     private void showLoading(String message) {
         VBox box = new VBox(20);
         box.setAlignment(Pos.CENTER);
@@ -144,7 +129,6 @@ public class DashboardScreen {
         centerArea.getChildren().setAll(box);
     }
 
-    // ── Error panel ───────────────────────────────────────────────────
     private void showError(String message) {
         VBox box = new VBox(12);
         box.setAlignment(Pos.CENTER);
@@ -177,7 +161,6 @@ public class DashboardScreen {
         VBox content = new VBox(24);
         content.setPadding(new Insets(32));
 
-        // Page header
         Label title = new Label("📊  Summary");
         title.setFont(Font.font("Segoe UI", FontWeight.BOLD, 28));
         title.setTextFill(Color.web(WHITE));
@@ -203,9 +186,10 @@ public class DashboardScreen {
         addInfoRow(infoCard, "Description", nvl(loadedRepo.getDescription(), "No description"));
         addInfoRow(infoCard, "Last Commit", nvl(loadedRepo.getLastCommitDate(), "Unknown"));
 
-        // ── Top contributors quick list ────────────────────────────────
+        // ── Top contributors quick list ───────────────────────────────
         VBox contribCard = buildCard("👥  Top Contributors");
         List<Contributor> top5 = loadedRepo.getContributors().stream().limit(5).toList();
+
         if (top5.isEmpty()) {
             contribCard.getChildren().add(dimLabel("No contributor data available."));
         } else {
@@ -223,7 +207,6 @@ public class DashboardScreen {
                 commitsL.setFont(Font.font("Segoe UI", 12));
                 commitsL.setTextFill(Color.web(WHITE + "88"));
 
-                // Progress bar showing share
                 double share = loadedRepo.getCommits().isEmpty() ? 0
                         : (double) c.getTotalCommits() / loadedRepo.getCommits().size();
                 ProgressBar pb = new ProgressBar(share);
@@ -262,17 +245,15 @@ public class DashboardScreen {
         title.setFont(Font.font("Segoe UI", FontWeight.BOLD, 28));
         title.setTextFill(Color.web(WHITE));
 
-        // ── Weekly commit bar chart ────────────────────────────────────
+        // ── Weekly commit bar chart ───────────────────────────────────
         VBox chartCard = buildCard("📅  Weekly Commit Activity");
 
         if (loadedRepo.getWeeklyActivity() == null || loadedRepo.getWeeklyActivity().isEmpty()) {
             chartCard.getChildren().add(dimLabel("No weekly activity data available."));
         } else {
-            // Find max commits in a week for scaling
             int maxCommits = loadedRepo.getWeeklyActivity().values().stream()
                     .mapToInt(List::size).max().orElse(1);
 
-            // Show last 12 weeks
             var weeks = loadedRepo.getWeeklyActivity().entrySet().stream()
                     .sorted(java.util.Map.Entry.<java.time.LocalDate, List<Commit>>comparingByKey().reversed())
                     .limit(12)
@@ -292,12 +273,10 @@ public class DashboardScreen {
                 VBox barGroup = new VBox(4);
                 barGroup.setAlignment(Pos.BOTTOM_CENTER);
 
-                // Count label on top
                 Label countLbl = new Label(String.valueOf(count));
                 countLbl.setFont(Font.font("Segoe UI", FontWeight.BOLD, 10));
                 countLbl.setTextFill(Color.web(CYAN));
 
-                // The bar
                 Region bar = new Region();
                 bar.setPrefWidth(36);
                 bar.setPrefHeight(barHeight);
@@ -306,9 +285,8 @@ public class DashboardScreen {
                                 "-fx-background-radius: 4 4 0 0;"
                 );
 
-                // Week label below
-                String weekLbl = entry.getKey().toString().substring(5); // MM-DD
-                Label dateLbl = new Label(weekLbl);
+                String weekStr = entry.getKey().toString().substring(5); // MM-DD
+                Label dateLbl = new Label(weekStr);
                 dateLbl.setFont(Font.font("Segoe UI", 9));
                 dateLbl.setTextFill(Color.web(WHITE + "55"));
                 dateLbl.setRotate(-35);
@@ -320,7 +298,7 @@ public class DashboardScreen {
             chartCard.getChildren().add(bars);
         }
 
-        // ── Contributor pie-style list ────────────────────────────────
+        // ── Contributor share list ────────────────────────────────────
         VBox pieCard = buildCard("👥  Contributor Share");
 
         if (loadedRepo.getContributors().isEmpty()) {
@@ -396,7 +374,6 @@ public class DashboardScreen {
                                 "-fx-border-width: 1;"
                 );
 
-                // Top row: author + date
                 HBox meta = new HBox(12);
                 meta.setAlignment(Pos.CENTER_LEFT);
 
@@ -419,8 +396,7 @@ public class DashboardScreen {
 
                 meta.getChildren().addAll(authorLbl, dateLbl, shaLbl);
 
-                // Message
-                String msg = c.getMessage().split("\n")[0]; // first line only
+                String msg = c.getMessage().split("\n")[0];
                 if (msg.length() > 100) msg = msg.substring(0, 97) + "...";
 
                 Label msgLbl = new Label(msg);
@@ -455,7 +431,7 @@ public class DashboardScreen {
         VBox repoSummaryCard = buildCard("📋  Repository Summary");
         VBox readmeCard      = buildCard("📖  README Summary");
 
-        Label repoLoading = dimLabel("Generating AI summary...");
+        Label repoLoading   = dimLabel("Generating AI summary...");
         Label readmeLoading = dimLabel("Generating README summary...");
         repoSummaryCard.getChildren().add(repoLoading);
         readmeCard.getChildren().add(readmeLoading);
@@ -470,7 +446,6 @@ public class DashboardScreen {
         // ── Fetch AI summaries on background threads ──────────────────
         DataService ds = new DataService();
 
-        // Repo summary
         Task<String> repoTask = new Task<>() {
             @Override protected String call() {
                 return ds.getRepositorySummary(loadedRepo);
@@ -489,7 +464,6 @@ public class DashboardScreen {
             repoSummaryCard.getChildren().add(dimLabel("Could not generate summary."));
         }));
 
-        // README summary
         Task<String> readmeTask = new Task<>() {
             @Override protected String call() {
                 return ds.getReadmeSummary(loadedRepo);
@@ -508,7 +482,7 @@ public class DashboardScreen {
             readmeCard.getChildren().add(dimLabel("Could not generate README summary."));
         }));
 
-        Thread t1 = new Thread(repoTask); t1.setDaemon(true); t1.start();
+        Thread t1 = new Thread(repoTask);  t1.setDaemon(true); t1.start();
         Thread t2 = new Thread(readmeTask); t2.setDaemon(true); t2.start();
     }
 
@@ -555,10 +529,10 @@ public class DashboardScreen {
                         "-fx-padding: 4 14 4 14;"
         );
 
-        Label userBadge = new Label("👤  " + username);
-        userBadge.setFont(Font.font("Segoe UI", FontWeight.BOLD, 12));
-        userBadge.setTextFill(Color.web(CYAN));
-        userBadge.setStyle(
+        Label ownerBadge = new Label("👤  " + owner);
+        ownerBadge.setFont(Font.font("Segoe UI", FontWeight.BOLD, 12));
+        ownerBadge.setTextFill(Color.web(CYAN));
+        ownerBadge.setStyle(
                 "-fx-background-color: " + CYAN + "22;" +
                         "-fx-border-color: " + CYAN + "55;" +
                         "-fx-border-width: 1;" +
@@ -567,7 +541,7 @@ public class DashboardScreen {
                         "-fx-padding: 4 14 4 14;"
         );
 
-        HBox rightBox = new HBox(12, repoPill, userBadge);
+        HBox rightBox = new HBox(12, repoPill, ownerBadge);
         rightBox.setAlignment(Pos.CENTER_RIGHT);
 
         bar.getChildren().addAll(logoBox, spacer, rightBox);
@@ -592,7 +566,6 @@ public class DashboardScreen {
         menuHeader.setTextFill(Color.web(WHITE + "44"));
         menuHeader.setStyle("-fx-padding: 0 0 10 8;");
 
-        // Each button calls a different panel
         String[][] menuItems = {
                 {"📊", "Summary"},
                 {"📈", "Graphs"},
@@ -609,7 +582,6 @@ public class DashboardScreen {
             btn.setOnMouseEntered(e -> styleSidebarBtn(btn, true));
             btn.setOnMouseExited(e -> styleSidebarBtn(btn, false));
 
-            // Wire each button to its panel
             btn.setOnAction(e -> {
                 switch (item[1]) {
                     case "Summary"        -> showSummaryPanel();
@@ -640,7 +612,7 @@ public class DashboardScreen {
                         "-fx-border-radius: 8; -fx-background-radius: 8;"
         );
         logoutBtn.setOnAction(e -> {
-            com.gitpulse.dashboard.LoginScreen login = new com.gitpulse.dashboard.LoginScreen();
+            LoginScreen login = new LoginScreen();
             login.show((Stage) logoutBtn.getScene().getWindow());
         });
 
@@ -695,7 +667,7 @@ public class DashboardScreen {
         card.getChildren().add(row);
     }
 
-    /** Stat card (number + label) */
+    /** Stat card (value + label) */
     private VBox buildStatCard(String label, String value) {
         VBox card = new VBox(6);
         card.setAlignment(Pos.CENTER_LEFT);
@@ -772,9 +744,9 @@ public class DashboardScreen {
         gc.setLineCap(StrokeLineCap.ROUND);
 
         double scale = w / 120.0;
-        double[] xs = {cx-28*scale, cx-16*scale, cx-6*scale,
-                cx+4*scale,  cx+14*scale, cx+22*scale, cx+28*scale};
-        double[] ys = {cy, cy, cy-24*scale, cy+18*scale, cy-14*scale, cy, cy};
+        double[] xs = {cx - 28*scale, cx - 16*scale, cx - 6*scale,
+                cx +  4*scale, cx + 14*scale, cx + 22*scale, cx + 28*scale};
+        double[] ys = {cy, cy, cy - 24*scale, cy + 18*scale, cy - 14*scale, cy, cy};
 
         gc.beginPath();
         gc.moveTo(xs[0], ys[0]);
@@ -782,9 +754,9 @@ public class DashboardScreen {
         gc.stroke();
 
         gc.setFill(Color.web(CYAN));
-        gc.fillOval(xs[0]-3, ys[0]-3, 6, 6);
-        gc.fillOval(xs[6]-3, ys[6]-3, 6, 6);
-        gc.fillOval(xs[2]-3, ys[2]-3, 6, 6);
+        gc.fillOval(xs[0] - 3, ys[0] - 3, 6, 6);
+        gc.fillOval(xs[6] - 3, ys[6] - 3, 6, 6);
+        gc.fillOval(xs[2] - 3, ys[2] - 3, 6, 6);
 
         return c;
     }

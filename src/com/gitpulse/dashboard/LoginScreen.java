@@ -1,5 +1,5 @@
 package com.gitpulse.dashboard;
-
+import com.gitpulse.Home.*;
 import com.gitpulse.Algorithm.RepositoryAnalyzer;
 import com.gitpulse.Algorithm.RepositoryReport;
 import com.gitpulse.model.Repository;

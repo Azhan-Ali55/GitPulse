@@ -86,7 +86,7 @@ public class InsightsPanel {
         return row;
     }
 
-    // ── Gap + streak
+    // ── Gap + streak ──────────────────────────────────────────────────
     private HBox gapAndStreakRow() {
         HBox row = new HBox(16);
 
@@ -117,7 +117,7 @@ public class InsightsPanel {
         return row;
     }
 
-    // ── Collaboration gauge — full radial dial
+    // ── Collaboration gauge — full radial dial ────────────────────────
     private VBox collaborationGauge() {
         VBox card = card();
         card.getChildren().add(sectionLabel("🤝  Collaboration Index"));
@@ -161,7 +161,7 @@ public class InsightsPanel {
         return card;
     }
 
-    // ── Bus driver
+    // ── Bus driver ────────────────────────────────────────────────────
     private VBox busDriverCard() {
         VBox card = card();
         boolean risk  = report.isBusDriver();
@@ -181,7 +181,7 @@ public class InsightsPanel {
         return card;
     }
 
-    // ── Clock face canvas
+    // ── Clock face canvas ─────────────────────────────────────────────
     private Canvas buildClockCanvas(double w, double h, int hour) {
         Canvas c = new Canvas(w, h);
         GraphicsContext gc = c.getGraphicsContext2D();
@@ -273,7 +273,7 @@ public class InsightsPanel {
         return box;
     }
 
-    // ── Scale bar with labels
+    // ── Scale bar with labels ─────────────────────────────────────────
     private VBox buildScaleBar(double fraction, String color, String minLabel, String maxLabel) {
         VBox box = new VBox(4);
 
@@ -307,7 +307,7 @@ public class InsightsPanel {
         return box;
     }
 
-    // ── Streak dot heatmap
+    // ── Streak dot heatmap ────────────────────────────────────────────
     private VBox buildStreakDots(int streak) {
         VBox box = new VBox(6);
         int dotCount = Math.min(streak, 35);
@@ -340,7 +340,7 @@ public class InsightsPanel {
         return box;
     }
 
-    // ── Radial dial canvas
+    // ── Radial dial canvas ────────────────────────────────────────────
     private Canvas buildRadialDial(double w, double h, double value, String color) {
         Canvas c = new Canvas(w, h);
         GraphicsContext gc = c.getGraphicsContext2D();
@@ -406,7 +406,7 @@ public class InsightsPanel {
         return c;
     }
 
-    // ── Helpers
+    // ── Helpers ───────────────────────────────────────────────────────
 
     private HBox zoneLegend(String range, String label, String color) {
         Region dot = new Region(); dot.setPrefSize(10, 10);

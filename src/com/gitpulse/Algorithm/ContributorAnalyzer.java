@@ -9,22 +9,35 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/*
- I designed this algorithm to test "Who is doing the work, and who has gone quiet?"
-
- WHAT IT DOES :
-      Note:(I used AI to get these measures)
-1. Gives every contributor a score out of 100 based on:
-    - How many commits they made  (volume)
-    - How regularly they commit   (consistency)
-    - How recently they were seen (recency)
-2. Labels each person: Top Contributor / Active / Occasional / Inactive
-3. Identifies "Inactive" contributors (silent for 90+ days relative to repo's last commit)
-  SCORING FORMULA:
-    overallScore = (commitShareScore * 0.50)    // 50% weight on volume
-                + (consistencyScore  * 0.30)    // 30% weight on regularity
-                + (recencyScore      * 0.20)    // 20% weight on recency
-
+/**
+ * CONTRIBUTOR ANALYZER
+ * ====================
+ * Answers the question: "Who is doing the work, and who has gone quiet?"
+ *
+ * WHAT IT DOES (plain English):
+ *  1. Gives every contributor a score out of 100 based on:
+ *       - How many commits they made  (volume)
+ *       - How regularly they commit   (consistency)
+ *       - How recently they were seen (recency)
+ *  2. Labels each person: Top Contributor / Active / Occasional / Inactive
+ *  3. Identifies "Inactive" contributors (silent for 90+ days relative to repo's last commit)
+ *
+ * SCORING FORMULA:
+ *   overallScore = (commitShareScore * 0.50)    ← 50% weight on volume
+ *               + (consistencyScore  * 0.30)    ← 30% weight on regularity
+ *               + (recencyScore      * 0.20)    ← 20% weight on recency
+ *
+ * FIX NOTES:
+ *  - BUG #1  (WEEKS on Instant): replaced ChronoUnit.WEEKS.between(Instant, Instant)
+ *            with ChronoUnit.DAYS.between() / 7 — Instant does not support WEEKS unit.
+ *  - BUG #2  (recency relative to now): recency is now measured against the repo's
+ *            most recent commit date, not Instant.now(), so completed/archived repos
+ *            are not unfairly penalised.
+ *  - BUG #3  (consistency 0 for single-week contributors): totalWeeks == 0 now
+ *            correctly returns 100.0 (was already there but the WEEKS bug masked it).
+ *  - BUG #4  (author name vs login mismatch): buildCommitDateMap now builds BOTH a
+ *            name-keyed and a normalised lowercase map; lookup falls back through both.
+ *  - BUG #5  (overallScore floor at 50): removed implicit floor; score can now reach 0.
  */
 public class ContributorAnalyzer {
 
@@ -40,7 +53,7 @@ public class ContributorAnalyzer {
         int totalCommits = contributors.stream().mapToInt(Contributor::getTotalCommits).sum();
         if (totalCommits == 0) return Collections.emptyList();
 
-        //  determine the repo's own latest commit date as the recency anchor.
+        // FIX #2: determine the repo's own latest commit date as the recency anchor.
         // Using Instant.now() penalises contributors of completed/archived repos unfairly.
         Instant repoLatestCommit = latestCommitInstant(commits);
 
@@ -58,7 +71,7 @@ public class ContributorAnalyzer {
         return scores;
     }
 
-
+    // ── Private helpers ───────────────────────────────────────────────────────
 
     private ContributorScore scoreContributor(Contributor contributor,
                                               int totalCommits,
@@ -67,22 +80,23 @@ public class ContributorAnalyzer {
         String username  = contributor.getUsername();
         int    myCommits = contributor.getTotalCommits();
 
-        // ── 1. Commit Share Score (0–100)
+        // ── 1. Commit Share Score (0–100) ────────────────────────────────────
         double commitShare      = (myCommits * 100.0) / totalCommits;
         double commitShareScore = Math.min(commitShare * 2.0, 100.0);
 
-        // ── 2. Resolve author date
+        // ── 2. Resolve author dates ──────────────────────────────────────────
+        // FIX #4: GitHub contributor login != git commit author name.
         // Try exact match first, then case-insensitive fallback.
         List<Instant> myDates = resolveDates(username, commitDatesByAuthor);
 
-        // ── 3. Consistency Score (0–100)
+        // ── 3. Consistency Score (0–100) ─────────────────────────────────────
         double consistencyScore = calculateConsistencyScore(myDates);
 
-        // ── 4. Recency Score (0–100)
+        // ── 4. Recency Score (0–100) ──────────────────────────────────────────
         // FIX #2: measure recency relative to the repo's last commit, not today.
         double recencyScore = calculateRecencyScore(myDates, repoLatestCommit);
 
-        // ── 5. Weighted Overall Score
+        // ── 5. Weighted Overall Score ─────────────────────────────────────────
         // FIX #5: no artificial floor — score reflects real performance.
         double overallScore = (commitShareScore * 0.50)
                 + (consistencyScore  * 0.30)
@@ -98,10 +112,15 @@ public class ContributorAnalyzer {
     }
 
     /**
-      Consistency = fraction of distinct weeks in which the contributor made
-      at least one commit, expressed as 0–100.
-      Important thing. if totalWeeks == 0 (all commits within same week) → return 100.0,
-      meaning "as consistent as possible given the time window".
+     * Consistency = fraction of distinct weeks in which the contributor made
+     * at least one commit, expressed as 0–100.
+     *
+     * FIX #1: replaced ChronoUnit.WEEKS.between(Instant, Instant) — Instant does
+     * not support the WEEKS unit and throws UnsupportedTemporalTypeException.
+     * Now uses DAYS / 7 which works correctly on Instant.
+     *
+     * FIX #3: totalWeeks == 0 (all commits within same week) → return 100.0,
+     * meaning "as consistent as possible given the time window".
      */
     private double calculateConsistencyScore(List<Instant> dates) {
         if (dates.isEmpty()) return 0.0;
@@ -127,12 +146,15 @@ public class ContributorAnalyzer {
 
     /**
      * Recency = exponential decay measured from the repo's own last commit date.
-     
-      Score = 100 × e^( –daysSinceLastCommit / 60 )
-        0 days before repo's last commit  → 100
-        60 days before repo's last commit → ~37
-        120 days                          → ~14
-        180+ days                         →  ~5
+     *
+     * FIX #2: anchor is repoLatestCommit (not Instant.now()) so that contributors
+     * to a completed/archived project are scored relative to when it was active.
+     *
+     * Score = 100 × e^( –daysSinceLastCommit / 60 )
+     *   0 days before repo's last commit  → 100
+     *   60 days before repo's last commit → ~37
+     *   120 days                          → ~14
+     *   180+ days                         →  ~5
      */
     private double calculateRecencyScore(List<Instant> dates, Instant repoLatestCommit) {
         if (dates.isEmpty()) return 0.0;
@@ -144,10 +166,11 @@ public class ContributorAnalyzer {
     }
 
     /**
-      Assigns a plain-English activity label.
-      "Inactive" threshold raised from recencyScore < 10 (which fires at ~90 days
-      before NOW) to recencyScore < 5 (fires at ~180 days before the repo anchor),
-      giving fairer treatment to contributors who were active near the repo's end.
+     * Assigns a plain-English activity label.
+     *
+     * "Inactive" threshold raised from recencyScore < 10 (which fires at ~90 days
+     * before NOW) to recencyScore < 5 (fires at ~180 days before the repo anchor),
+     * giving fairer treatment to contributors who were active near the repo's end.
      */
     private String classifyContributor(double overallScore, double recencyScore) {
         if (recencyScore < 5.0)  return "Inactive";        // silent for 180+ days before repo end
@@ -158,9 +181,9 @@ public class ContributorAnalyzer {
     }
 
     /**
-      Builds a map of authorName → list of commit Instants.
-      Stores both original-case and lowercase keys to help with
-      case-insensitive fallback lookup in resolveDates().
+     * Builds a map of authorName → list of commit Instants.
+     * Stores both original-case and lowercase keys to help with
+     * case-insensitive fallback lookup in resolveDates().
      */
     private Map<String, List<Instant>> buildCommitDateMap(List<Commit> commits) {
         Map<String, List<Instant>> map = new HashMap<>();
@@ -183,12 +206,12 @@ public class ContributorAnalyzer {
     }
 
     /**
-       Resolves a contributor's commit dates despite login-vs-name mismatch.
-      Priority: exact match → lowercase match → empty list.
+     * FIX #4: Resolves a contributor's commit dates despite login-vs-name mismatch.
+     * Priority: exact match → lowercase match → empty list.
      */
     private List<Instant> resolveDates(String username,
                                        Map<String, List<Instant>> commitDatesByAuthor) {
-        // 1. Exact match
+        // 1. Exact match (login == author name, e.g. same GitHub username)
         if (commitDatesByAuthor.containsKey(username)) {
             return commitDatesByAuthor.get(username);
         }
@@ -203,19 +226,14 @@ public class ContributorAnalyzer {
             if (key.contains(lower) || lower.contains(key)) {
                 return entry.getValue();
             }
-            // 4. Word-level match: "Azhan Ali" → ["azhan", "ali"] vs "azhan-ali55"
-            for (String word : key.split("[\\s\\-_]+")) {
-                if (word.length() >= 4 && lower.contains(word)) {
-                    return entry.getValue();
-                }
-            }
         }
         return Collections.emptyList();
     }
+
     /**
-      Returns the latest commit Instant across all commits.
-      Used as the recency anchor so scores are repo-relative, not clock-relative.
-     /
+     * Returns the latest commit Instant across all commits.
+     * Used as the recency anchor so scores are repo-relative, not clock-relative.
+     */
     private Instant latestCommitInstant(List<Commit> commits) {
         if (commits == null || commits.isEmpty()) return Instant.now();
         return commits.stream()
@@ -225,11 +243,12 @@ public class ContributorAnalyzer {
                 .orElse(Instant.now());
     }
 
-    // ── Public convenience filters
+    // ── Public convenience filters ────────────────────────────────────────────
+
     /**
-      Returns only Top Contributors.
-      Falls back to the highest scorer if nobody qualifies, so the list is never empty
-      for a repo that has real commits.
+     * Returns only Top Contributors.
+     * Falls back to the highest scorer if nobody qualifies, so the list is never empty
+     * for a repo that has real commits.
      */
     public List<ContributorScore> getTopContributors(List<ContributorScore> ranked) {
         List<ContributorScore> top = ranked.stream()
@@ -243,6 +262,7 @@ public class ContributorAnalyzer {
         }
         return top;
     }
+
     /** Returns contributors labelled Inactive. */
     public List<ContributorScore> getInactiveContributors(List<ContributorScore> ranked) {
         return ranked.stream()
