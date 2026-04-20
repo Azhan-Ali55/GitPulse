@@ -10,21 +10,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /*
- * I designed this algorithm to test "Who is doing the work, and who has gone quiet?"
- *
- * WHAT IT DOES :
- *     Note:(I used AI to get these measures)
- *  1. Gives every contributor a score out of 100 based on:
- *       - How many commits they made  (volume)
- *       - How regularly they commit   (consistency)
- *       - How recently they were seen (recency)
- *  2. Labels each person: Top Contributor / Active / Occasional / Inactive
- *  3. Identifies "Inactive" contributors (silent for 90+ days relative to repo's last commit)
- * SCORING FORMULA:
- *   overallScore = (commitShareScore * 0.50)    // 50% weight on volume
- *               + (consistencyScore  * 0.30)    // 30% weight on regularity
- *               + (recencyScore      * 0.20)    // 20% weight on recency
- *
+ I designed this algorithm to test "Who is doing the work, and who has gone quiet?"
+
+ WHAT IT DOES :
+      Note:(I used AI to get these measures)
+1. Gives every contributor a score out of 100 based on:
+    - How many commits they made  (volume)
+    - How regularly they commit   (consistency)
+    - How recently they were seen (recency)
+2. Labels each person: Top Contributor / Active / Occasional / Inactive
+3. Identifies "Inactive" contributors (silent for 90+ days relative to repo's last commit)
+  SCORING FORMULA:
+    overallScore = (commitShareScore * 0.50)    // 50% weight on volume
+                + (consistencyScore  * 0.30)    // 30% weight on regularity
+                + (recencyScore      * 0.20)    // 20% weight on recency
+
  */
 public class ContributorAnalyzer {
 
@@ -98,10 +98,10 @@ public class ContributorAnalyzer {
     }
 
     /**
-     * Consistency = fraction of distinct weeks in which the contributor made
-     * at least one commit, expressed as 0–100.
-     * Important thing. if totalWeeks == 0 (all commits within same week) → return 100.0,
-     * meaning "as consistent as possible given the time window".
+      Consistency = fraction of distinct weeks in which the contributor made
+      at least one commit, expressed as 0–100.
+      Important thing. if totalWeeks == 0 (all commits within same week) → return 100.0,
+      meaning "as consistent as possible given the time window".
      */
     private double calculateConsistencyScore(List<Instant> dates) {
         if (dates.isEmpty()) return 0.0;
@@ -128,11 +128,11 @@ public class ContributorAnalyzer {
     /**
      * Recency = exponential decay measured from the repo's own last commit date.
      
-     * Score = 100 × e^( –daysSinceLastCommit / 60 )
-     *   0 days before repo's last commit  → 100
-     *   60 days before repo's last commit → ~37
-     *   120 days                          → ~14
-     *   180+ days                         →  ~5
+      Score = 100 × e^( –daysSinceLastCommit / 60 )
+        0 days before repo's last commit  → 100
+        60 days before repo's last commit → ~37
+        120 days                          → ~14
+        180+ days                         →  ~5
      */
     private double calculateRecencyScore(List<Instant> dates, Instant repoLatestCommit) {
         if (dates.isEmpty()) return 0.0;
@@ -144,10 +144,10 @@ public class ContributorAnalyzer {
     }
 
     /**
-     * Assigns a plain-English activity label.
-     * "Inactive" threshold raised from recencyScore < 10 (which fires at ~90 days
-     * before NOW) to recencyScore < 5 (fires at ~180 days before the repo anchor),
-     * giving fairer treatment to contributors who were active near the repo's end.
+      Assigns a plain-English activity label.
+      "Inactive" threshold raised from recencyScore < 10 (which fires at ~90 days
+      before NOW) to recencyScore < 5 (fires at ~180 days before the repo anchor),
+      giving fairer treatment to contributors who were active near the repo's end.
      */
     private String classifyContributor(double overallScore, double recencyScore) {
         if (recencyScore < 5.0)  return "Inactive";        // silent for 180+ days before repo end
@@ -158,9 +158,9 @@ public class ContributorAnalyzer {
     }
 
     /**
-     * Builds a map of authorName → list of commit Instants.
-     * Stores both original-case and lowercase keys to help with
-     * case-insensitive fallback lookup in resolveDates().
+      Builds a map of authorName → list of commit Instants.
+      Stores both original-case and lowercase keys to help with
+      case-insensitive fallback lookup in resolveDates().
      */
     private Map<String, List<Instant>> buildCommitDateMap(List<Commit> commits) {
         Map<String, List<Instant>> map = new HashMap<>();
@@ -183,8 +183,8 @@ public class ContributorAnalyzer {
     }
 
     /**
-     *  Resolves a contributor's commit dates despite login-vs-name mismatch.
-     * Priority: exact match → lowercase match → empty list.
+       Resolves a contributor's commit dates despite login-vs-name mismatch.
+      Priority: exact match → lowercase match → empty list.
      */
     private List<Instant> resolveDates(String username,
                                        Map<String, List<Instant>> commitDatesByAuthor) {
@@ -213,9 +213,9 @@ public class ContributorAnalyzer {
         return Collections.emptyList();
     }
     /**
-     * Returns the latest commit Instant across all commits.
-     * Used as the recency anchor so scores are repo-relative, not clock-relative.
-     */
+      Returns the latest commit Instant across all commits.
+      Used as the recency anchor so scores are repo-relative, not clock-relative.
+     /
     private Instant latestCommitInstant(List<Commit> commits) {
         if (commits == null || commits.isEmpty()) return Instant.now();
         return commits.stream()
@@ -227,9 +227,9 @@ public class ContributorAnalyzer {
 
     // ── Public convenience filters
     /**
-     * Returns only Top Contributors.
-     * Falls back to the highest scorer if nobody qualifies, so the list is never empty
-     * for a repo that has real commits.
+      Returns only Top Contributors.
+      Falls back to the highest scorer if nobody qualifies, so the list is never empty
+      for a repo that has real commits.
      */
     public List<ContributorScore> getTopContributors(List<ContributorScore> ranked) {
         List<ContributorScore> top = ranked.stream()

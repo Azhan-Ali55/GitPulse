@@ -1,13 +1,13 @@
 package com.gitpulse.Algorithm;
 
 /**
- * Represents the overall activity trend of the repository over time.
+ Represents the overall activity trend of the repository over time.
  English meaning of each trend:
- *  GROWING   – the project is getting more commits over time (team is picking up speed)
- *  DECLINING – fewer commits lately (project may be winding down or team is busy)
- *  STABLE    – consistent commit pace (healthy, predictable workflow)
- *  SPORADIC  – commits happen in bursts with long gaps (irregular development)
- *  INACTIVE  – no commits in a long time (project appears abandoned or on hold)
+ GROWING   – the project is getting more commits over time (team is picking up speed)
+ DECLINING – fewer commits lately (project may be winding down or team is busy)
+ STABLE    – consistent commit pace (healthy, predictable workflow)
+ SPORADIC  – commits happen in bursts with long gaps (irregular development)
+ INACTIVE  – no commits in a long time (project appears abandoned or on hold)
  */
 public class ActivityTrend {
 
