@@ -3,9 +3,9 @@ package com.gitpulse.Algorithm;
 import com.gitpulse.model.Repository;
 import java.util.List;
 
-/**
- * REPOSITORY ANALYZER  ← Main entry point for the entire algorithm package
- *
+/*
+   REPOSITORY ANALYZER  ← Main entry point for the entire algorithm package
+
   This is the single class the rest of the application needs to call.
   It orchestrates all five sub-analyzers and returns one clean RepositoryReport.
   The report contains EVERYTHING:
@@ -25,28 +25,28 @@ public class RepositoryAnalyzer {
     private final UniqueInsightsAnalyzer  uniqueInsightsAnalyzer  = new UniqueInsightsAnalyzer();
     private final PlainEnglishSummaryBuilder summaryBuilder        = new PlainEnglishSummaryBuilder();
 
-    /**
-     * Runs all analyses on a Repository and returns a fully populated RepositoryReport.
+    /*
+      Runs all analyses on a Repository and returns a fully populated RepositoryReport.
      */
     public RepositoryReport analyze(Repository repository) {
         RepositoryReport report = new RepositoryReport();
 
-        // ── 1. Contributor Analysis
+        // Contributor Analysis
         List<ContributorScore> ranked = contributorAnalyzer.analyze(repository);
         report.setRankedContributors(ranked);
         report.setTopContributors(contributorAnalyzer.getTopContributors(ranked));
         report.setInactiveContributors(contributorAnalyzer.getInactiveContributors(ranked));
 
-        // ── 2. Monthly Activity Breakdown
+        // Monthly Activity Breakdown
         List<MonthlyStats> monthly = activityAnalyzer.buildMonthlyBreakdown(repository);
         report.setMonthlyBreakdown(monthly);
         report.setMostActiveMonths(activityAnalyzer.getMostActiveMonths(monthly, 3));
         report.setLeastActiveMonths(activityAnalyzer.getLeastActiveMonths(monthly, 3));
 
-        // ── 3. Activity Trend
+        // Activity Trend
         report.setActivityTrend(trendAnalyzer.detect(monthly));
 
-        // ── 4. Unique Insights
+        // Unique Insights
         var commits = repository.getCommits();
         report.setBusyHourOfDay(uniqueInsightsAnalyzer.getBusiestHourOfDay(commits));
         report.setBusyDayOfWeek(uniqueInsightsAnalyzer.getBusiestDayOfWeek(commits));

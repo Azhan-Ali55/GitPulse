@@ -249,7 +249,7 @@ public class UniqueInsightsAnalyzer {
         }
     }
 
-    // ── Utility
+    // Utility
     private String capitalize(String s) {
         if (s == null || s.isEmpty()) return s;
         return s.charAt(0) + s.substring(1).toLowerCase();

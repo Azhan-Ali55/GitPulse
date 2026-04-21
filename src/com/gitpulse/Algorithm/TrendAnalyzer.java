@@ -37,13 +37,13 @@ public class TrendAnalyzer {
             counts[i] = monthlyStats.get(i).getCommitCount();
         }
 
-        // ── Step 4: Inactive check (takes priority) ───────────────────────────
+        // Inactive check (takes priority)
         if (isInactive(counts)) {
             return new ActivityTrend(ActivityTrend.TrendType.INACTIVE, 0, stdDev(counts),
                     "This project appears to be inactive — no commits have been made recently.");
         }
 
-        // ── FIX: Insufficient data check ──────────────────────────────────────
+        // Insufficient data check
         // A single month (or two) cannot produce a meaningful trend. Linear regression
         // on 1 point always returns slope = 0, falsely reporting "STABLE".
         if (n < MIN_MONTHS_FOR_TREND) {
@@ -56,7 +56,7 @@ public class TrendAnalyzer {
         double volatility = stdDev(counts);
         double mean       = mean(counts);
 
-        // ── Step 3: Sporadic check ────────────────────────────────────────────
+        // Sporadic check
         if (mean > 0 && volatility > SPORADIC_FACTOR * mean && Math.abs(slope) < SLOPE_THRESHOLD) {
             return new ActivityTrend(ActivityTrend.TrendType.SPORADIC, slope, volatility,
                     "Development happens in bursts — busy for a while, then quiet for a while.");
@@ -75,7 +75,7 @@ public class TrendAnalyzer {
                 "Development is steady and consistent. The team maintains a reliable work pace.");
     }
 
-    // ── Math helpers
+    // Math helpers
 
     private double linearRegressionSlope(double[] y) {
         int n = y.length;
