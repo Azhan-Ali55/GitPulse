@@ -37,6 +37,9 @@ public class RepositorySummaryPromptGenerator implements PromptGenerator {
         prompt.append("2. Team activity assessment\n");
         prompt.append("3. Any concerns about contributor balance\n");
         prompt.append("Keep the response concise and professional.");
+        prompt.append("Make sure that you give your answer in a well formated manner by using headings " +
+                "and points by using roman numbers. Also avoid * and #, for Headings use numbers and for" +
+                "points use romans");
         return prompt.toString();
     }
 }
