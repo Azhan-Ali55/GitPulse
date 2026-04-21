@@ -79,9 +79,7 @@ public class DashboardScreen {
         fade.play();
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // PANEL SWITCHER — animates the swap
-    // ─────────────────────────────────────────────────────────────────
     private void switchPanel(javafx.scene.Node newContent) {
         if (centerArea.getChildren().isEmpty()) {
             centerArea.getChildren().setAll(newContent);
@@ -100,50 +98,44 @@ public class DashboardScreen {
         fadeOut.play();
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // PANEL 1 — OVERVIEW SUMMARY  (rich SummaryPanel from dashboard package)
-    // ─────────────────────────────────────────────────────────────────
+    // OVERVIEW SUMMARY  (rich SummaryPanel from dashboard package)
     private void showSummaryPanel() {
         // Use the rich SummaryPanel (com.gitpulse.dashboard) as the primary view
         SummaryPanel panel = new SummaryPanel(loadedRepo, report);
         switchPanel(panel.build());
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // PANEL 2 — CONTRIBUTORS  (rich ContributorPanel from dashboard package)
-    // ─────────────────────────────────────────────────────────────────
     private void showContributorsPanel() {
         ContributorPanel panel = new ContributorPanel(report);
         switchPanel(panel.build());
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // PANEL 3 — ACTIVITY GRAPHS  (rich ActivityPanel from dashboard package)
-    // ─────────────────────────────────────────────────────────────────
     private void showGraphsPanel() {
         ActivityPanel panel = new ActivityPanel(report);
         switchPanel(panel.build());
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // PANEL 4 — WEEKLY SUMMARIES  (NEW — WeeklySummariesPanel)
-    // ─────────────────────────────────────────────────────────────────
     private void showWeeklySummariesPanel() {
         WeeklySummariesPanel panel = new WeeklySummariesPanel();
         switchPanel(panel.build(loadedRepo));
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // PANEL 5 — UNIQUE INSIGHTS  (rich InsightsPanel from dashboard package)
-    // ─────────────────────────────────────────────────────────────────
     private void showInsightsPanel() {
         InsightsPanel panel = new InsightsPanel(report);
         switchPanel(panel.build());
     }
 
-    // ─────────────────────────────────────────────────────────────────
+    // Charts
+    private void showChartsPanel() {
+        ChartsPanel panel = new ChartsPanel(loadedRepo, report);
+        centerArea.getChildren().setAll(panel.build());
+    }
+
     // PANEL 6 — COMMIT HISTORY
-    // ─────────────────────────────────────────────────────────────────
     private void showCommitHistoryPanel() {
         VBox content = new VBox(24);
         content.setPadding(new Insets(32));
@@ -205,9 +197,7 @@ public class DashboardScreen {
         switchPanel(styledScroll(content));
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // PANEL 7 — PROJECT HEALTH
-    // ─────────────────────────────────────────────────────────────────
     private void showHealthPanel() {
         VBox content = new VBox(24);
         content.setPadding(new Insets(32));
@@ -279,9 +269,7 @@ public class DashboardScreen {
         switchPanel(styledScroll(content));
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // PANEL 8 — REPO AI SUMMARY
-    // ─────────────────────────────────────────────────────────────────
     private void showRepoSummaryPanel() {
         VBox content = new VBox(24);
         content.setPadding(new Insets(32));
@@ -316,9 +304,7 @@ public class DashboardScreen {
         Thread t = new Thread(task); t.setDaemon(true); t.start();
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // PANEL 9 — README AI SUMMARY
-    // ─────────────────────────────────────────────────────────────────
     private void showReadmeSummaryPanel() {
         VBox content = new VBox(24);
         content.setPadding(new Insets(32));
@@ -353,9 +339,7 @@ public class DashboardScreen {
         Thread t = new Thread(task); t.setDaemon(true); t.start();
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // TOP BAR
-    // ─────────────────────────────────────────────────────────────────
     private HBox buildTopBar() {
         HBox bar = new HBox();
         bar.setAlignment(Pos.CENTER_LEFT);
@@ -411,9 +395,7 @@ public class DashboardScreen {
         return bar;
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // SIDEBAR — 9 functional buttons across 3 sections
-    // ─────────────────────────────────────────────────────────────────
     private VBox buildSidebar() {
         VBox sidebar = new VBox(4);
         sidebar.setPadding(new Insets(20, 10, 20, 10));
@@ -436,6 +418,7 @@ public class DashboardScreen {
         addSidebarBtn(sidebar, "📈", "Activity Graphs",  () -> showGraphsPanel(),           false);
         addSidebarBtn(sidebar, "📅", "Weekly Summaries", () -> showWeeklySummariesPanel(),  false);
         addSidebarBtn(sidebar, "⚡", "Unique Insights",  () -> showInsightsPanel(),         false);
+        addSidebarBtn(sidebar, "📊", "Charts & Graphs", () -> showChartsPanel(),            false);
 
         // ── HISTORY section
         sidebar.getChildren().add(sectionDivider("HISTORY"));
@@ -470,11 +453,11 @@ public class DashboardScreen {
     }
 
     /**
-     * Adds a sidebar button with an active-highlight state.
-     * Clicking any button deactivates the previous one and activates itself.
-     *
-     * @param defaultActive true only for the button that should start highlighted
-     *                      (Overview, since we open on that panel)
+      Adds a sidebar button with an active-highlight state.
+      Clicking any button deactivates the previous one and activates itself.
+
+      @param defaultActive true only for the button that should start highlighted
+                           (Overview, since we open on that panel)
      */
     private void addSidebarBtn(VBox sidebar, String icon,
                                String label, Runnable action,
@@ -506,10 +489,7 @@ public class DashboardScreen {
         sidebar.getChildren().add(btn);
     }
 
-    // ─────────────────────────────────────────────────────────────────
     // HELPERS
-    // ─────────────────────────────────────────────────────────────────
-
     private Label sectionDivider(String text) {
         Label lbl = new Label(text);
         lbl.setFont(Font.font("Segoe UI", FontWeight.BOLD, 9));
