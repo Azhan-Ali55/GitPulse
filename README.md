@@ -16,10 +16,14 @@ This project marks the **final compilation stage of our work on GitHub**, integr
 
 #  Features
 
-*  Accepts GitHub repository URL as input
+*  Accepts GitHub username and repository name as input
 * Displays repository statistics
 *  Shows number of contributors
 *  Displays commit history details
+*  Repository summaries using AI
+*  Weekly summaries using AI
+*  README summaries using AI
+*  Highlights inactive contributors 
 * Generates structured repository insights
 *  Fast and efficient Java-based processing
 
@@ -42,22 +46,24 @@ This project marks the **final compilation stage of our work on GitHub**, integr
 **API**
 
 * GitHub REST API
+* Gemini API
 
 **Tools**
 
 * Git
 * GitHub
-* IntelliJ IDEA / Eclipse / VS Code
+* IntelliJ IDEA 
 
 ---
 
 # How It Works
 
-1. The user enters a GitHub repository URL.
+1. The user enters a GitHub username and repository name.
 2. The Java backend extracts repository details.
 3. GitHub API is called to fetch repository information.
 4. The retrieved data is processed using Java logic.
-5. The statistics are displayed to the user in a structured format.
+5. The processed data is sent to the Gemini API with appropiate prompts.
+6. The statistics are displayed to the user in a structured format.
 
 ---
 
@@ -65,7 +71,8 @@ This project marks the **final compilation stage of our work on GitHub**, integr
 
 **Input:**
 
-https://github.com/user/repository-name
+Username: Azhan-Ali55
+Repository name: sudoku
 
 **Output:**
 
@@ -81,7 +88,7 @@ https://github.com/user/repository-name
 
 ### Step 1: Clone Repository
 
-git clone https://github.com/your-username/git-pulse.git
+git clone https://github.com/Azhan-Ali55/GitPulse.git
 
 ### Step 2: Open Project
 
@@ -99,18 +106,13 @@ javac Main.java
 
 java Main
 
-### Step 5: Open in Browser (if web-based)
-
-http://localhost:8080
-
----
-
 # 📊 Future Improvements
 
 * Support private repositories
 * Improve UI design
 * Add repository comparison feature
-*
+* Integrate a database such as MySQL
+* Add ChatBot
 
 ---
 
