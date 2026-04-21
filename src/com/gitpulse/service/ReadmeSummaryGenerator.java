@@ -20,7 +20,10 @@ public class ReadmeSummaryGenerator implements PromptGenerator {
         prompt.append("1. What this project does in simple terms\n");
         prompt.append("2. Who it is for\n");
         prompt.append("3. Key features mentioned\n");
-        prompt.append("Keep the response concise and professional.");
+        prompt.append("Keep the response concise and professional.\n");
+        prompt.append("Make sure that you give your answer in a well formated manner by using headings " +
+                "and points by using roman numbers. Also avoid * and #, for Headings use numbers and for" +
+                "points use romans");
 
         return prompt.toString();
     }
