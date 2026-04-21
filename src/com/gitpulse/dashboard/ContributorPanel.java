@@ -54,7 +54,7 @@ public class ContributorPanel {
         return new VBox(6, title, sub);
     }
 
-    // ── Commit share — vertical bar chart with full axes ─────────────
+    // Commit share and vertical bar chart with full axes
     private VBox commitShareBarChart(List<ContributorScore> ranked) {
         VBox card = card();
         Label heading = new Label("Commit Share per Contributor  (%)");
@@ -149,7 +149,7 @@ public class ContributorPanel {
         return card;
     }
 
-    // ── Score breakdown — grouped horizontal bar chart ────────────────
+    // Score breakdown — grouped horizontal bar chart
     private VBox scoreGroupedBarChart(List<ContributorScore> ranked) {
         VBox card = card();
         Label heading = new Label("Score Breakdown per Contributor  (0–100)");
@@ -256,7 +256,7 @@ public class ContributorPanel {
         return card;
     }
 
-    // ── Ranked table ──────────────────────────────────────────────────
+    // Ranked table
     private VBox rankedTable(List<ContributorScore> ranked) {
         VBox card = card();
         Label heading = new Label("Full Ranked Table");
@@ -316,7 +316,7 @@ public class ContributorPanel {
         return l;
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────
+    // Helpers
 
     private ScrollPane scrollableCanvas(Canvas c, double h) {
         ScrollPane sp = new ScrollPane(c);

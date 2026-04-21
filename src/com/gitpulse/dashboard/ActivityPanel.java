@@ -49,7 +49,7 @@ public class ActivityPanel {
         return new VBox(6, title, sub);
     }
 
-    // ── Monthly commit bar chart with full axes ───────────────────────
+    // Monthly commit bar chart with full axes
     private VBox monthlyBarChart(List<MonthlyStats> monthly) {
         VBox card = card();
         Label heading = new Label("Monthly Commit Volume");
@@ -175,7 +175,7 @@ public class ActivityPanel {
         return card;
     }
 
-    // ── Commits-per-week line chart with area fill ────────────────────
+    // Commits-per-week line chart with area fill
     private VBox commitsPerWeekLineChart(List<MonthlyStats> monthly) {
         VBox card = card();
         Label heading = new Label("Commits / Week  (pace indicator)");
@@ -299,7 +299,7 @@ public class ActivityPanel {
         return card;
     }
 
-    // ── Trend card ────────────────────────────────────────────────────
+    // Trend card
     private VBox trendCard() {
         VBox card = card();
         Label heading = new Label("Activity Trend");
@@ -336,7 +336,7 @@ public class ActivityPanel {
         return card;
     }
 
-    // ── Extreme months ────────────────────────────────────────────────
+    // Extreme months
     private HBox extremeMonthsRow() {
         HBox row = new HBox(16);
         VBox mostCard  = extremeCard("🔥  Busiest Period",  report.getMostActiveMonths(),  "#F0883E");
@@ -372,7 +372,7 @@ public class ActivityPanel {
         return card;
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────
+    // Helpers
     private ScrollPane scrollableCanvas(Canvas c, double h) {
         ScrollPane sp = new ScrollPane(c);
         sp.setFitToHeight(true); sp.setPrefHeight(h + 20);

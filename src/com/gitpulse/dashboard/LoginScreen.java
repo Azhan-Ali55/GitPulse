@@ -36,7 +36,8 @@ public class LoginScreen {
         VBox center = new VBox(32);
         center.setAlignment(Pos.CENTER);
         root.setPrefSize(1280,800);
-        // ── Logo section ──────────────────────────────────────────────
+
+        // Logo section
         Canvas logo = buildLogo(90, 90);
 
         Label gitLabel = new Label("Git");
@@ -58,7 +59,7 @@ public class LoginScreen {
         VBox logoSection = new VBox(10, logo, brandBox, tagline);
         logoSection.setAlignment(Pos.CENTER);
 
-        // ── Login card ────────────────────────────────────────────────
+        // Login card
         VBox card = new VBox(18);
         card.setStyle(
                 "-fx-background-color: " + SURFACE + ";" +
@@ -204,7 +205,7 @@ public class LoginScreen {
         new ParallelTransition(fade, slide).play();
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────
+    // Helpers
 
     private Canvas buildLogo(double w, double h) {
         Canvas c = new Canvas(w, h);

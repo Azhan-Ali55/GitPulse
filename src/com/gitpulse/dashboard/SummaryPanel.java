@@ -10,10 +10,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 
 /**
- * SUMMARY PANEL
- * =============
- * Shows: plain-English paragraph, health badge, trend badge,
- * collaboration index bar, and a top-level stats row.
+  SUMMARY PANEL
+
+  Shows: plain-English paragraph, health badge, trend badge,
+  collaboration index bar, and a top-level stats row.
  */
 public class SummaryPanel {
 
@@ -46,7 +46,7 @@ public class SummaryPanel {
         return styledScroll(content);
     }
 
-    // ── Page header ───────────────────────────────────────────────────
+    // Page header
     private VBox pageHeader() {
         Label title = new Label("Repository Summary");
         title.setFont(Font.font("Segoe UI", FontWeight.BOLD, 28));
@@ -64,7 +64,7 @@ public class SummaryPanel {
         return box;
     }
 
-    // ── Four quick-stat cards ─────────────────────────────────────────
+    // Four quick-stat cards
     private HBox statsRow() {
         HBox row = new HBox(16);
         row.getChildren().addAll(
@@ -84,7 +84,7 @@ public class SummaryPanel {
         return row;
     }
 
-    // ── Plain-English summary card ────────────────────────────────────
+    // Plain-English summary card
     private VBox summaryCard() {
         VBox card = card();
 
@@ -102,7 +102,7 @@ public class SummaryPanel {
         return card;
     }
 
-    // ── Health + trend badges side-by-side ───────────────────────────
+    // Health + trend badges side-by-side
     private HBox badgeRow() {
         HBox row = new HBox(16);
 
@@ -130,7 +130,7 @@ public class SummaryPanel {
         return row;
     }
 
-    // ── Collaboration index bar ───────────────────────────────────────
+    // Collaboration index bar
     private VBox collaborationBar() {
         VBox card = card();
 
@@ -179,7 +179,7 @@ public class SummaryPanel {
         return card;
     }
 
-    // ── Component helpers ─────────────────────────────────────────────
+    // Component helpers
 
     private VBox statCard(String label, String value, String color) {
         VBox card = new VBox(6);
