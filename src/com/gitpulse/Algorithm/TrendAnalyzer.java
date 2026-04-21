@@ -21,9 +21,9 @@ public class TrendAnalyzer {
     // Minimum months needed for a statistically meaningful trend
     private static final int MIN_MONTHS_FOR_TREND = 3;
 
-    /**
-     * Detects the trend from a chronological list of MonthlyStats.
-     * @param monthlyStats ordered oldest → newest
+    /*
+      Detects the trend from a chronological list of MonthlyStats.
+      @param monthlyStats ordered oldest → newest
      */
     public ActivityTrend detect(List<MonthlyStats> monthlyStats) {
         if (monthlyStats == null || monthlyStats.isEmpty()) {

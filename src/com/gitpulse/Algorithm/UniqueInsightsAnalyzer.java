@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
+/*
   UNIQUE INSIGHTS ANALYZER
   Computes everything GitHub does NOT show us.
   Insights produced:
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class UniqueInsightsAnalyzer {
 
-    // ── Public entry points ───────────────────────────────────────────────────
+    // Public entry points
 
     /**
       Returns the hour of day (0–23 UTC) that has the most commits.
@@ -46,8 +46,8 @@ public class UniqueInsightsAnalyzer {
     }
 
     /*
-     * Returns the day of week with the most commits.
-     * e.g. "Tuesday"
+      Returns the day of week with the most commits.
+      e.g. "Tuesday"
      */
     public String getBusiestDayOfWeek(List<Commit> commits) {
         Map<DayOfWeek, Integer> dayCount = new EnumMap<>(DayOfWeek.class);
@@ -84,7 +84,7 @@ public class UniqueInsightsAnalyzer {
         return (double) totalHours / (sorted.size() - 1);
     }
 
-    /**
+    /*
       Returns the longest gap (in days) between two consecutive commits.
      */
     public int getLongestGapDays(List<Commit> commits) {
@@ -102,7 +102,7 @@ public class UniqueInsightsAnalyzer {
         return maxGap;
     }
 
-    /**
+    /*
       Returns the username of the contributor who made the most commits.
       If that person made >50% of all commits they are flagged as a "bus driver" —
       meaning the project is at risk if this person leaves.
@@ -117,7 +117,7 @@ public class UniqueInsightsAnalyzer {
                 .orElse("Unknown");
     }
 
-    /**
+    /*
       Bus Driver Risk: returns true if a single contributor made more than 50% of all commits.
       Plain English: "This project depends heavily on one person.
                       If they stop contributing, the project may stall."
@@ -137,20 +137,20 @@ public class UniqueInsightsAnalyzer {
     }
 
     /*
-
     Note:I used Ai to  calculate insights by giving the idea to ai
-     * COLLABORATION INDEX (0–100)
-     * Measures how evenly commit work is shared among contributors.
-     *
-     * FORMULA — based on the Gini coefficient (inverted):
-     *   Gini = 0  → perfectly equal (everyone commits the same amount)  → index = 100
-     *   Gini = 1  → completely unequal (one person does everything)      → index = 0
-     *   collaborationIndex = (1 – Gini) × 100
-     * Labels:
-     *   80–100 → "Well Distributed"   (healthy team)
-     *   50–79  → "Small Team"         (a few key players)
-     *   0–49   → "Solo Project"       (one person dominates)
+      COLLABORATION INDEX (0–100)
+      Measures how evenly commit work is shared among contributors.
+
+      FORMULA — based on the Gini coefficient (inverted):
+        Gini = 0  → perfectly equal (everyone commits the same amount)  → index = 100
+        Gini = 1  → completely unequal (one person does everything)      → index = 0
+        collaborationIndex = (1 – Gini) × 100
+      Labels:
+        80–100 → "Well Distributed"   (healthy team)
+        50–79  → "Small Team"         (a few key players)
+        0–49   → "Solo Project"       (one person dominates)
      */
+
     public double getCollaborationIndex(Repository repository) {
         List<com.gitpulse.model.Contributor> contributors = repository.getContributors();
         if (contributors == null || contributors.size() <= 1) return 0;
@@ -178,7 +178,7 @@ public class UniqueInsightsAnalyzer {
         return "Solo Project";
     }
 
-    /**
+    /*
       PEAK COMMIT STREAK
       The longest number of CONSECUTIVE CALENDAR DAYS on which at least one commit was made.
       Plain English: "The team had a 14-day run where they committed every single day."
@@ -209,7 +209,7 @@ public class UniqueInsightsAnalyzer {
         return maxStreak;
     }
 
-    /**
+    /*
       PROJECT HEALTH LABEL
       A single easy-to-understand label based on recency + frequency.
       Rules (checked in order):

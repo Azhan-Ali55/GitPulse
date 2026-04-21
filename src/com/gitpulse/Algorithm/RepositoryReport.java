@@ -3,7 +3,7 @@ package com.gitpulse.Algorithm;
 import java.util.List;
 
 /*
- * The single output object that holds EVERY insight computed by the algorithm package.
+  The single output object that holds EVERY insight computed by the algorithm package.
  In other classes , I've used this class to extract any type of data I want
  */
 public class RepositoryReport {
@@ -31,10 +31,10 @@ public class RepositoryReport {
     private int     peakStreakDays;        // longest daily commit streak
     private String  projectHealthLabel;    // "Healthy", "At Risk", "Stale", "Abandoned"
 
-    // ── Plain-English summary
+    // Plain-English summary
     private String plainEnglishSummary;    // one paragraph, no jargon
 
-    // ── Setters
+    // Setters
     public void setRankedContributors(List<ContributorScore> v)   { rankedContributors = v; }
     public void setTopContributors(List<ContributorScore> v)      { topContributors = v; }
     public void setInactiveContributors(List<ContributorScore> v) { inactiveContributors = v; }
@@ -54,7 +54,7 @@ public class RepositoryReport {
     public void setProjectHealthLabel(String v)                   { projectHealthLabel = v; }
     public void setPlainEnglishSummary(String v)                  { plainEnglishSummary = v; }
 
-    // ── Getters
+    // Getters
     public List<ContributorScore> getRankedContributors()   { return rankedContributors; }
     public List<ContributorScore> getTopContributors()      { return topContributors; }
     public List<ContributorScore> getInactiveContributors() { return inactiveContributors; }

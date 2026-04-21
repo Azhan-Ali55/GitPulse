@@ -60,7 +60,7 @@ public class RepositoryAnalyzer {
         report.setPeakStreakDays(uniqueInsightsAnalyzer.getPeakStreakDays(commits));
         report.setProjectHealthLabel(uniqueInsightsAnalyzer.getProjectHealthLabel(repository));
 
-        // ── 5. Plain-English Summary
+        // Plain-English Summary
         report.setPlainEnglishSummary(summaryBuilder.build(repository, report));
 
         return report;
