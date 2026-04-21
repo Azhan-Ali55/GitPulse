@@ -3,14 +3,14 @@ package com.gitpulse.Algorithm;
 import java.util.List;
 
 /*
- * This checks if the projecting is growing , inactive etc
- * like in our repo
- * ALGORITHM — Linear Regression Slope + Volatility Check:
- * Step 1 – Collect monthly commit counts as a simple number sequence.
- * Step 2 – Run linear regression to get the SLOPE.
- * Step 3 – Calculate VOLATILITY (standard deviation of monthly counts).
- * Step 4 – If the last 3 months are all zero → INACTIVE.
- * Step 5 – If fewer than 3 months of data exist → INSUFFICIENT_DATA.
+  This checks if the projecting is growing , inactive etc
+  like in our repo
+  ALGORITHM — Linear Regression Slope + Volatility Check:
+  Step 1 – Collect monthly commit counts as a simple number sequence.
+  Step 2 – Run linear regression to get the SLOPE.
+  Step 3 – Calculate VOLATILITY (standard deviation of monthly counts).
+  Step 4 – If the last 3 months are all zero → INACTIVE.
+  Step 5 – If fewer than 3 months of data exist → INSUFFICIENT_DATA.
  */
 public class TrendAnalyzer {
 

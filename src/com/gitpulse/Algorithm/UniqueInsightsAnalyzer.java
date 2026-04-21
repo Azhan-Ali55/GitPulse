@@ -9,26 +9,27 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * UNIQUE INSIGHTS ANALYZER
- * Computes everything GitHub does NOT show us.
- * Insights produced:
- *  1.  Busiest Hour of Day         – "Most commits happen around 3 PM"
- *  2.  Busiest Day of Week         – "Tuesday is the most productive day"
- *  3.  Average Time Between Commits– "On average a new commit appears every 6 hours"
- *  4.  Longest Commit Gap          – "The longest quiet period was 12 days"
- *  5.  Dominant Contributor        – person with >50% of commits (bus-factor risk)
- *  6.  Bus Driver Risk Flag        – true/false: "one person is critical to this project"
- *  7.  Collaboration Index (0–100) – how evenly the work is distributed
- *  8.  Peak Commit Streak          – "The longest daily commit streak was 14 days"
- *  9.  Project Health Label        – "Healthy / At Risk / Stale / Abandoned"
+  UNIQUE INSIGHTS ANALYZER
+  Computes everything GitHub does NOT show us.
+  Insights produced:
+   1.  Busiest Hour of Day         – "Most commits happen around 3 PM"
+   2.  Busiest Day of Week         – "Tuesday is the most productive day"
+   3.  Average Time Between Commits– "On average a new commit appears every 6 hours"
+   4.  Longest Commit Gap          – "The longest quiet period was 12 days"
+   5.  Dominant Contributor        – person with >50% of commits (bus-factor risk)
+   6.  Bus Driver Risk Flag        – true/false: "one person is critical to this project"
+   7.  Collaboration Index (0–100) – how evenly the work is distributed
+   8.  Peak Commit Streak          – "The longest daily commit streak was 14 days"
+   9.  Project Health Label        – "Healthy / At Risk / Stale / Abandoned"
  */
+
 public class UniqueInsightsAnalyzer {
 
     // ── Public entry points ───────────────────────────────────────────────────
 
     /**
-     * Returns the hour of day (0–23 UTC) that has the most commits.
-     * Output English: "Most commits happen around 2 PM."
+      Returns the hour of day (0–23 UTC) that has the most commits.
+      Output English: "Most commits happen around 2 PM."
      */
     public double getBusiestHourOfDay(List<Commit> commits) {
         Map<Integer, Integer> hourCount = new HashMap<>();
@@ -63,7 +64,7 @@ public class UniqueInsightsAnalyzer {
     }
 
     /*
-     * Returns the average number of hours between consecutive commits.
+      Returns the average number of hours between consecutive commits.
      */
     public double getAvgTimeBetweenCommits(List<Commit> commits) {
         if (commits.size() < 2) return 0;
@@ -84,7 +85,7 @@ public class UniqueInsightsAnalyzer {
     }
 
     /**
-     * Returns the longest gap (in days) between two consecutive commits.
+      Returns the longest gap (in days) between two consecutive commits.
      */
     public int getLongestGapDays(List<Commit> commits) {
         List<Instant> sorted = commits.stream()
@@ -102,9 +103,9 @@ public class UniqueInsightsAnalyzer {
     }
 
     /**
-     * Returns the username of the contributor who made the most commits.
-     * If that person made >50% of all commits they are flagged as a "bus driver" —
-     * meaning the project is at risk if this person leaves.
+      Returns the username of the contributor who made the most commits.
+      If that person made >50% of all commits they are flagged as a "bus driver" —
+      meaning the project is at risk if this person leaves.
      */
     public String getDominantContributor(Repository repository) {
         List<com.gitpulse.model.Contributor> contributors = repository.getContributors();
@@ -117,9 +118,9 @@ public class UniqueInsightsAnalyzer {
     }
 
     /**
-     * Bus Driver Risk: returns true if a single contributor made more than 50% of all commits.
-     * Plain English: "This project depends heavily on one person.
-     *                 If they stop contributing, the project may stall."
+      Bus Driver Risk: returns true if a single contributor made more than 50% of all commits.
+      Plain English: "This project depends heavily on one person.
+                      If they stop contributing, the project may stall."
      */
     public boolean isBusDriverRisk(Repository repository) {
         List<com.gitpulse.model.Contributor> contributors = repository.getContributors();
@@ -170,7 +171,7 @@ public class UniqueInsightsAnalyzer {
         return Math.max(0, Math.min(100, (1 - gini) * 100));
     }
 
-    /** Turns a collaboration index number into a label. */
+    /* Turns a collaboration index number into a label. */
     public String getCollaborationLabel(double collaborationIndex) {
         if (collaborationIndex >= 80) return "Well Distributed";
         if (collaborationIndex >= 50) return "Small Team";
@@ -178,10 +179,10 @@ public class UniqueInsightsAnalyzer {
     }
 
     /**
-     * PEAK COMMIT STREAK
-     * The longest number of CONSECUTIVE CALENDAR DAYS on which at least one commit was made.
-     * Plain English: "The team had a 14-day run where they committed every single day."
-     * This highlights periods of intense focused work — not shown anywhere on GitHub.
+      PEAK COMMIT STREAK
+      The longest number of CONSECUTIVE CALENDAR DAYS on which at least one commit was made.
+      Plain English: "The team had a 14-day run where they committed every single day."
+      This highlights periods of intense focused work — not shown anywhere on GitHub.
      */
     public int getPeakStreakDays(List<Commit> commits) {
         Set<LocalDate> commitDays = new HashSet<>();
@@ -209,14 +210,14 @@ public class UniqueInsightsAnalyzer {
     }
 
     /**
-     * PROJECT HEALTH LABEL
-     * A single easy-to-understand label based on recency + frequency.
-     * Rules (checked in order):
-     *   "Healthy"   – committed in last 14 days AND ≥ 10 commits/month average
-     *   "Active"    – committed in last 30 days
-     *   "At Risk"   – last commit was 31–90 days ago
-     *   "Stale"     – last commit was 91–365 days ago
-     *   "Abandoned" – no commit in over a year
+      PROJECT HEALTH LABEL
+      A single easy-to-understand label based on recency + frequency.
+      Rules (checked in order):
+        "Healthy"   – committed in last 14 days AND ≥ 10 commits/month average
+        "Active"    – committed in last 30 days
+        "At Risk"   – last commit was 31–90 days ago
+        "Stale"     – last commit was 91–365 days ago
+        "Abandoned" – no commit in over a year
      */
     public String getProjectHealthLabel(Repository repository) {
         String lastDateStr = repository.getLastCommitDate();

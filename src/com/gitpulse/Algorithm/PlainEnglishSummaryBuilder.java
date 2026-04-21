@@ -4,25 +4,25 @@ import com.gitpulse.model.Repository;
 import java.util.List;
 
 /**
- * PLAIN ENGLISH SUMMARY BUILDER
- * ==============================
- * Takes all the computed insights and stitches them into a single paragraph
- * that a non-technical person can read (This was one of the main purpose of
- * this project to make things easier for project managers)and understand immediately.
+  PLAIN ENGLISH SUMMARY BUILDER:
+
+  Takes all the computed insights and stitches them into a single paragraph
+  that a non-technical person can read (This was one of the main purpose of
+  this project to make things easier for project managers)and understand immediately.
  */
 public class PlainEnglishSummaryBuilder {
 
     public String build(Repository repository, RepositoryReport report) {
         StringBuilder sb = new StringBuilder();
 
-        // ── Opening
+        // Opening
         sb.append("\"").append(repository.getName()).append("\"");
         if (repository.getDescription() != null && !repository.getDescription().isBlank()) {
             sb.append(" — ").append(repository.getDescription().trim());
         }
         sb.append(". ");
 
-        // ── Contributors
+        // Contributors
         List<ContributorScore> top      = report.getTopContributors();
         List<ContributorScore> inactive = report.getInactiveContributors();
 
@@ -47,7 +47,7 @@ public class PlainEnglishSummaryBuilder {
             }
         }
 
-        // ── Bus driver(It means a contributor is a driver if more than 50% commits are
+        // Bus driver(It means a contributor is a driver if more than 50% commits are
         // made by him)risk
         if (report.isBusDriver()) {
             sb.append("⚠ Heads up: ")
@@ -69,19 +69,19 @@ public class PlainEnglishSummaryBuilder {
                     .append(". ");
         }
 
-        // ── Collaboration ─────────────────────────────────────────────────────
+        // Collaboration
         sb.append("The teamwork style is classified as \"")
                 .append(report.getCollaborationLabel())
                 .append("\" (score: ")
                 .append(String.format("%.0f", report.getCollaborationIndex()))
                 .append("/100). ");
 
-        // ── Activity trend
+        // Activity trend
         if (report.getActivityTrend() != null) {
             sb.append(report.getActivityTrend().getPlainEnglish()).append(" ");
         }
 
-        // ── Most active month
+        // Most active month
         List<MonthlyStats> mostActive   = report.getMostActiveMonths();
         List<MonthlyStats> leastActive  = report.getLeastActiveMonths();
 
@@ -105,7 +105,7 @@ public class PlainEnglishSummaryBuilder {
                     .append(". ");
         }
 
-        // ── Timing insights ───────────────────────────────────────────────────
+        // Timing insights
         if (report.getBusyDayOfWeek() != null && !report.getBusyDayOfWeek().equals("Unknown")) {
             sb.append("Most commits tend to happen on ").append(report.getBusyDayOfWeek());
             int hour = (int) report.getBusyHourOfDay();
@@ -113,14 +113,14 @@ public class PlainEnglishSummaryBuilder {
             sb.append(" (UTC). ");
         }
 
-        // ── Commit gap
+        // Commit gap
         if (report.getLongestGapDays() > 0) {
             sb.append("The longest stretch with no commits was ")
                     .append(plural(report.getLongestGapDays(), "day"))
                     .append(". ");
         }
 
-        // ── Streak
+        // Streak
         if (report.getPeakStreakDays() > 1) {
             sb.append("The team's longest daily commit streak was ")
                     .append(plural(report.getPeakStreakDays(), "consecutive day"))
@@ -152,7 +152,7 @@ public class PlainEnglishSummaryBuilder {
     }
 
     /**
-     * Converts an ISO-8601 date string like "2025-11-30T18:57:55Z" to "November 2025".
+     Converts an ISO-8601 date string like "2025-11-30T18:57:55Z" to "November 2025".
      */
     private String formatDate(String isoDate) {
         try {

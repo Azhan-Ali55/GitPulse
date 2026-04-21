@@ -10,34 +10,34 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * CONTRIBUTOR ANALYZER
- * ====================
- * Answers the question: "Who is doing the work, and who has gone quiet?"
- *
- * WHAT IT DOES (plain English):
- *  1. Gives every contributor a score out of 100 based on:
- *       - How many commits they made  (volume)
- *       - How regularly they commit   (consistency)
- *       - How recently they were seen (recency)
- *  2. Labels each person: Top Contributor / Active / Occasional / Inactive
- *  3. Identifies "Inactive" contributors (silent for 90+ days relative to repo's last commit)
- *
- * SCORING FORMULA:
- *   overallScore = (commitShareScore * 0.50)    ← 50% weight on volume
- *               + (consistencyScore  * 0.30)    ← 30% weight on regularity
- *               + (recencyScore      * 0.20)    ← 20% weight on recency
- *
- * FIX NOTES:
- *  - BUG #1  (WEEKS on Instant): replaced ChronoUnit.WEEKS.between(Instant, Instant)
- *            with ChronoUnit.DAYS.between() / 7 — Instant does not support WEEKS unit.
- *  - BUG #2  (recency relative to now): recency is now measured against the repo's
- *            most recent commit date, not Instant.now(), so completed/archived repos
- *            are not unfairly penalised.
- *  - BUG #3  (consistency 0 for single-week contributors): totalWeeks == 0 now
- *            correctly returns 100.0 (was already there but the WEEKS bug masked it).
- *  - BUG #4  (author name vs login mismatch): buildCommitDateMap now builds BOTH a
- *            name-keyed and a normalised lowercase map; lookup falls back through both.
- *  - BUG #5  (overallScore floor at 50): removed implicit floor; score can now reach 0.
+ CONTRIBUTOR ANALYZER
+
+ Answers the question: "Who is doing the work, and who has gone quiet?"
+
+ WHAT IT DOES (plain English):
+ 1. Gives every contributor a score out of 100 based on:
+    - How many commits they made  (volume)
+    - How regularly they commit   (consistency)
+    - How recently they were seen (recency)
+ 2. Labels each person: Top Contributor / Active / Occasional / Inactive
+ 3. Identifies "Inactive" contributors (silent for 90+ days relative to repo's last commit)
+
+ SCORING FORMULA:
+ overallScore = (commitShareScore * 0.50)    ← 50% weight on volume
+    + (consistencyScore  * 0.30)    ← 30% weight on regularity
+    + (recencyScore      * 0.20)    ← 20% weight on recency
+
+ FIX NOTES:
+ - BUG #1  (WEEKS on Instant): replaced ChronoUnit.WEEKS.between(Instant, Instant)
+    with ChronoUnit.DAYS.between() / 7 — Instant does not support WEEKS unit.
+ - BUG #2  (recency relative to now): recency is now measured against the repo's
+    most recent commit date, not Instant.now(), so completed/archived repos
+    are not unfairly penalised.
+ - BUG #3  (consistency 0 for single-week contributors): totalWeeks == 0 now
+    correctly returns 100.0 (was already there but the WEEKS bug masked it).
+ - BUG #4  (author name vs login mismatch): buildCommitDateMap now builds BOTH a
+    name-keyed and a normalised lowercase map; lookup falls back through both.
+ - BUG #5  (overallScore floor at 50): removed implicit floor; score can now reach 0.
  */
 public class ContributorAnalyzer {
 

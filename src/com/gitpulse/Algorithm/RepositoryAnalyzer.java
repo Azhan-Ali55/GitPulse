@@ -5,16 +5,16 @@ import java.util.List;
 
 /**
  * REPOSITORY ANALYZER  ← Main entry point for the entire algorithm package
- * =====================
- * This is the single class the rest of the application needs to call.
- * It orchestrates all five sub-analyzers and returns one clean RepositoryReport.
- * The report contains EVERYTHING:
- *   - Ranked contributors + top + inactive
- *   - Monthly activity breakdown
- *   - Most active least active months
- *   - Activity trend (GROWING / DECLINING / STABLE / SPORADIC / INACTIVE)
- *   - All unique insights not available on GitHub
- *   - A plain-English one-paragraph summary
+ *
+  This is the single class the rest of the application needs to call.
+  It orchestrates all five sub-analyzers and returns one clean RepositoryReport.
+  The report contains EVERYTHING:
+    - Ranked contributors + top + inactive
+    - Monthly activity breakdown
+    - Most active least active months
+    - Activity trend (GROWING / DECLINING / STABLE / SPORADIC / INACTIVE)
+    - All unique insights not available on GitHub
+    - A plain-English one-paragraph summary
  */
 public class RepositoryAnalyzer {
 

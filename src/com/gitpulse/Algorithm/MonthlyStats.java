@@ -3,8 +3,8 @@ package com.gitpulse.Algorithm;
 import java.time.Month;
 
 /*
- * Stores  commit statistics for a single calendar month.
- * Used to find most or least active months and build activity trends.
+  Stores  commit statistics for a single calendar month.
+  Used to find most or least active months and build activity trends.
  */
 public class MonthlyStats {
 
