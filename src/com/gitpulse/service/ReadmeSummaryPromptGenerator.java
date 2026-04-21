@@ -1,10 +1,10 @@
 package com.gitpulse.service;
 
-public class ReadmeSummaryGenerator implements PromptGenerator {
+public class ReadmeSummaryPromptGenerator implements PromptGenerator {
     private final String readmeContent;
 
     // Constructor
-    public ReadmeSummaryGenerator(String readmeContent) {
+    public ReadmeSummaryPromptGenerator(String readmeContent) {
         this.readmeContent = readmeContent;
     }
 

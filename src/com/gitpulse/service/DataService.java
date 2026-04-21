@@ -68,7 +68,7 @@ public class DataService {
     }
     // Get AI summary of repository
     public String getRepositorySummary(Repository repository) {
-        PromptGenerator generator = new RepositorySummaryGenerator(repository);
+        PromptGenerator generator = new RepositorySummaryPromptGenerator(repository);
         AiSummaryService aiService = new AiSummaryService();
         return aiService.getSummary(generator);
     }
@@ -78,7 +78,7 @@ public class DataService {
         if (repository.getReadme() == null || repository.getReadme().isEmpty()) {
             return "No README available for this repository.";
         }
-        PromptGenerator generator = new ReadmeSummaryGenerator(repository.getReadme());
+        PromptGenerator generator = new ReadmeSummaryPromptGenerator(repository.getReadme());
         AiSummaryService aiService = new AiSummaryService();
         return aiService.getSummary(generator);
     }
@@ -91,7 +91,7 @@ public class DataService {
                 service.generate(repo.getWeeklyActivity());
 
         for (WeeklySummary ws : summaries) {
-            PromptGenerator generator = new WeeklySummaryGenerator(ws);
+            PromptGenerator generator = new WeeklySummaryPromptGenerator(ws);
             AiSummaryService ai = new AiSummaryService();
 
             ws.setSummaryText(ai.getSummary(generator));

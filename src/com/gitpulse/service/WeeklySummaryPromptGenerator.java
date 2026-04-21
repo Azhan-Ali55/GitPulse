@@ -1,11 +1,11 @@
 package com.gitpulse.service;
 
 import com.gitpulse.model.WeeklySummary;
-public class WeeklySummaryGenerator implements PromptGenerator {
+public class WeeklySummaryPromptGenerator implements PromptGenerator {
     private final WeeklySummary summary;
 
     // Constructor
-    public WeeklySummaryGenerator(WeeklySummary summary) {
+    public WeeklySummaryPromptGenerator(WeeklySummary summary) {
         this.summary = summary;
     }
 

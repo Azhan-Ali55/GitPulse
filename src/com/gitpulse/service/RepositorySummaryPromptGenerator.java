@@ -3,11 +3,11 @@ package com.gitpulse.service;
 import com.gitpulse.model.Contributor;
 import com.gitpulse.model.Repository;
 
-public class RepositorySummaryGenerator implements PromptGenerator {
+public class RepositorySummaryPromptGenerator implements PromptGenerator {
     private final Repository repository;
 
     // Constructor
-    public RepositorySummaryGenerator(Repository repository) {
+    public RepositorySummaryPromptGenerator(Repository repository) {
         this.repository = repository;
     }
     // Defining method to generate prompt
