@@ -6,6 +6,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setFullScreen(true);
         SplashScreen splash = new SplashScreen();
         splash.show(primaryStage);
     }
