@@ -68,27 +68,45 @@ public class DataService {
     }
     // Get AI summary of repository
     public String getRepositorySummary(Repository repository) {
+        // Return cached summary if already generated
+        if (repository.getRepositorySummary() != null) {
+            return repository.getRepositorySummary();
+        }
+
         PromptGenerator generator = new RepositorySummaryPromptGenerator(repository);
         AiSummaryService aiService = new AiSummaryService();
-        return aiService.getSummary(generator);
+        String summary = aiService.getSummary(generator);
+        repository.setRepositorySummary(summary);
+        return summary;
     }
 
     // Get AI summary of README
     public String getReadmeSummary(Repository repository) {
+        // Return cached summary if already generated
+        if (repository.getReadmeSummary() != null) {
+            return repository.getReadmeSummary();
+        }
+
         if (repository.getReadme() == null || repository.getReadme().isEmpty()) {
             return "No README available for this repository.";
         }
         PromptGenerator generator = new ReadmeSummaryPromptGenerator(repository.getReadme());
         AiSummaryService aiService = new AiSummaryService();
-        return aiService.getSummary(generator);
+        String summary = aiService.getSummary(generator);
+        repository.setReadmeSummary(summary);
+        return summary;
     }
 
     // Get AI summary of weekly stats
-    public List<WeeklySummary> getWeeklySummaries(Repository repo) {
+    public List<WeeklySummary> getWeeklySummaries(Repository repository) {
+        // Return cached summary if already generated
+        if (repository.getWeeklySummaries() != null) {
+            return repository.getWeeklySummaries();
+        }
 
         WeeklySummaryService service = new WeeklySummaryService();
         List<WeeklySummary> summaries =
-                service.generate(repo.getWeeklyActivity());
+                service.generate(repository.getWeeklyActivity());
 
         for (WeeklySummary ws : summaries) {
             PromptGenerator generator = new WeeklySummaryPromptGenerator(ws);
@@ -96,6 +114,7 @@ public class DataService {
 
             ws.setSummaryText(ai.getSummary(generator));
         }
+        repository.setWeeklySummaries(summaries);
         return summaries;
     }
 

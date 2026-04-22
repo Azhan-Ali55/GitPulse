@@ -13,10 +13,12 @@ public class Repository {
     private String language;
     private String readme;
     private String lastCommitDate;
+    private String repositorySummary;
+    private String readmeSummary;
+    private List<WeeklySummary> weeklySummaries;
     private List<Commit> commits;           // Storing all the commits of the repository
     private List<Contributor> contributors; // Storing all the Contributors of the repository
     private Map<LocalDate, List<Commit>> weeklyActivity; // Storing weeklyActivity in groupwise format
-
 
     // Constructor
     public Repository(String owner, String name) {
@@ -37,6 +39,11 @@ public class Repository {
     public void addDescription(String description) { this.description = description; }
     public void addLanguage(String language) { this.language = language; }
 
+    // Setters to store summary returned from Gemini API
+    public void setRepositorySummary(String summary) { this.repositorySummary = summary; }
+    public void setReadmeSummary(String summary) { this.readmeSummary = summary; }
+    public void setWeeklySummaries(List<WeeklySummary> summaries) { this.weeklySummaries = summaries; }
+
     // Getters for all fields
     public String getOwner() { return owner; }
     public String getName() { return name; }
@@ -44,6 +51,9 @@ public class Repository {
     public String getLanguage() { return language; }
     public String getReadme() { return readme; }
     public String getLastCommitDate() { return lastCommitDate; }
+    public String getRepositorySummary() { return repositorySummary; }
+    public String getReadmeSummary() { return readmeSummary; }
+    public List<WeeklySummary> getWeeklySummaries() { return weeklySummaries; }
     public List<Commit> getCommits() { return commits; }
     public List<Contributor> getContributors() { return contributors; }
     public Map<LocalDate, List<Commit>> getWeeklyActivity() { return weeklyActivity; }
