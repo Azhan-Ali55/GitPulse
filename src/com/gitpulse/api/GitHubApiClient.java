@@ -60,15 +60,40 @@ public class GitHubApiClient extends ApiClient {
         throw new Exception(message);
     }
 
+    // Fetch all commits
+    @Override
+    public String fetchCommits(String owner, String repo) throws Exception {
+        StringBuilder allCommits = new StringBuilder("[");
+        int page = 1;
+        boolean firstPage = true;
+
+        while (true) {
+            String endpoint = "/repos/" + owner + "/" + repo +
+                    "/commits?per_page=100&page=" + page;
+            String json = get(endpoint);
+
+            // Remove outer brackets from each page
+            String trimmed = json.trim();
+            trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
+
+            // Stop if page is empty
+            if (trimmed.isEmpty()) break;
+
+            if (!firstPage) allCommits.append(",");
+            allCommits.append(trimmed);
+
+            firstPage = false;
+            page++;
+        }
+
+        allCommits.append("]");
+        return allCommits.toString();
+    }
+
     // Implementing abstract methods from ApiClient
     @Override
     public String fetchRepositoryInfo(String owner, String repository) throws Exception {
         return get("/repos/" + owner + "/" + repository);
-    }
-
-    @Override
-    public String fetchCommits(String owner, String repository) throws Exception {
-        return get("/repos/" + owner + "/" + repository + "/commits?per_page=100");
     }
 
     @Override
