@@ -15,26 +15,24 @@ public class AiSummaryService {
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=";
     // Method to get Summary
     public String getSummary(PromptGenerator generator) {
-        int maxRetries = 3;
-        for (int attempt = 1; attempt <= maxRetries; attempt++) {
-            try {
-                String prompt = generator.generatePrompt();
-                return callGeminiApi(prompt);
-            } catch (Exception e) {
-                ErrorHandler.log("AiSummaryService", e.getMessage());
-                if (e.getMessage() != null && e.getMessage().contains("429")) {
-                    try {
-                        // Wait longer each retry: 5s, 10s, 15s
-                        Thread.sleep(5000L * attempt);
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                    }
-                } else {
-                    return "Summary unavailable at this time.";
+        try {
+            String prompt = generator.generatePrompt();
+            return callGeminiApi(prompt);
+        } catch (Exception e) {
+            if (e.getMessage().contains("429")) {
+                ErrorHandler.log("AiSummaryService", "Rate limit reached! Waiting 15 seconds");
+                try {
+                    Thread.sleep(15000);
+                    // Try one more time after waiting
+                    return callGeminiApi(generator.generatePrompt());
+                } catch (Exception retryException) {
+                    ErrorHandler.log("AiSummaryService", retryException.getMessage());
+                    return "Summary unavailable! Rate limit exceeded.";
                 }
             }
+            ErrorHandler.log("AiSummaryService", e.getMessage());
+            return "Summary unavailable at this time.";
         }
-        return "Rate limit reached. Please wait a minute and try again.";
     }
 
     // Method to call Gemini API

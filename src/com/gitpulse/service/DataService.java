@@ -14,6 +14,8 @@ public class DataService {
     // Simple in-memory cache to avoid re-fetching same repo
     private static final java.util.Map<String, Repository> cache =
             new java.util.concurrent.ConcurrentHashMap<>();
+    private static final java.util.Map<String, List<WeeklySummary>> weeklyCache =
+            new java.util.concurrent.ConcurrentHashMap<>();
 
     // Constructor
     public DataService() {
@@ -99,23 +101,34 @@ public class DataService {
 
     // Get AI summary of weekly stats
     public List<WeeklySummary> getWeeklySummaries(Repository repository) {
+        String key = repository.getOwner() + "/" + repository.getName();
+
+        if (weeklyCache.containsKey(key)) {
+            return weeklyCache.get(key);
+        }
         // Return cached summary if already generated
         if (repository.getWeeklySummaries() != null) {
             return repository.getWeeklySummaries();
         }
 
         WeeklySummaryService service = new WeeklySummaryService();
-        List<WeeklySummary> summaries =
+        List<WeeklySummary> allSummaries =
                 service.generate(repository.getWeeklyActivity());
 
-        for (WeeklySummary ws : summaries) {
-            PromptGenerator generator = new WeeklySummaryPromptGenerator(ws);
-            AiSummaryService ai = new AiSummaryService();
+        // Only process last 4 weeks due to API limits
+        List<WeeklySummary> recentSummaries = allSummaries.subList(
+                Math.max(0, allSummaries.size() - 4), allSummaries.size()
+        );
 
+        // Loop to generate summary for each week
+        AiSummaryService ai = new AiSummaryService();
+        for (WeeklySummary ws : recentSummaries) {
+            PromptGenerator generator = new WeeklySummaryPromptGenerator(ws);
             ws.setSummaryText(ai.getSummary(generator));
         }
-        repository.setWeeklySummaries(summaries);
-        return summaries;
+        repository.setWeeklySummaries(recentSummaries);
+        weeklyCache.put(key, recentSummaries);
+        return recentSummaries;
     }
 
     // Method for background threading for JavaFX

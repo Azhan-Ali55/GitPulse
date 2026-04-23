@@ -174,7 +174,7 @@ public class ContributorAnalyzer {
      */
     private String classifyContributor(double overallScore, double recencyScore) {
         if (recencyScore < 5.0)  return "Inactive";        // silent for 180+ days before repo end
-        if (overallScore >= 60)  return "Top Contributor";
+        if (overallScore >= 80)  return "Top Contributor";
         if (overallScore >= 35)  return "Active";
         if (overallScore >= 15)  return "Occasional";
         return "Inactive";

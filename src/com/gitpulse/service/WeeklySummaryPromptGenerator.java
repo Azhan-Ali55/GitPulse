@@ -16,6 +16,9 @@ public class WeeklySummaryPromptGenerator implements PromptGenerator {
             - Week: %s
             - Total commits: %d
             - Top contributor: %s
+            - Give a concise summary and description of commits in that week and what happened.
+            - Don't use * or #. Give me formatted reply using headings and points. For points 
+            use roman numbers and for heading use normal numbers.
             """.formatted(
                 summary.getWeekStart(),
                 summary.getTotalCommits(),
