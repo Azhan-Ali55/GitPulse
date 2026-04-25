@@ -1,4 +1,4 @@
-package com.gitpulse.service;
+package com.gitpulse.ai;
 
 public class ReadmeSummaryPromptGenerator implements PromptGenerator {
     private final String readmeContent;

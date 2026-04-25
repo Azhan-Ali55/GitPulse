@@ -1,6 +1,8 @@
 package com.gitpulse.service;
 
 import java.util.List;
+
+import com.gitpulse.ai.*;
 import com.gitpulse.api.GitHubApiClient;
 import com.gitpulse.model.Repository;
 import com.gitpulse.model.WeeklySummary;

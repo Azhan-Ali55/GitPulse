@@ -1,4 +1,4 @@
-package com.gitpulse.service;
+package com.gitpulse.ai;
 
 import com.gitpulse.model.Contributor;
 import com.gitpulse.model.Repository;
