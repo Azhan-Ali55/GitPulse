@@ -2,18 +2,17 @@ package com.gitpulse.StartingWindow;
 
 import com.gitpulse.dashboard.LoginScreen;
 
-
 import javafx.animation.*;
-        import javafx.geometry.Pos;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-        import javafx.scene.paint.Color;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-        import javafx.scene.text.*;
-        import javafx.stage.Stage;
+import javafx.scene.text.*;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
@@ -94,7 +93,7 @@ public class SplashScreen {
         //Scene
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.DECORATED);
         stage.setMaximized(true);
         stage.setTitle("GitPulse");
         stage.show();
